@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seva Sarathi – Malappuram</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Noto+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary:#1B4F9B; --primary-dark:#0f3270; --primary-light:#2d6bc7;
+  --accent:#F5A623; --accent-dark:#c8850d;
+  --success:#27AE60; --danger:#E74C3C; --warning:#F39C12;
+  --bg:#EEF2F7; --card:#FFFFFF; --text:#1a2332; --muted:#6b7a90;
+  --border:#dde3ec; --shadow:0 4px 24px rgba(27,79,155,0.13);
+  --radius:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.page{display:none;min-height:100vh;flex-direction:column}
+.page.active{display:flex}
+
+/* ── HEADER ── */
+.app-header{background:linear-gradient(135deg,var(--primary-dark) 0%,var(--primary) 60%,var(--primary-light) 100%);
+  color:#fff;padding:16px 20px;display:flex;align-items:center;gap:14px;
+  box-shadow:0 4px 20px rgba(15,50,112,0.4);position:relative;overflow:hidden}
+.app-header::before{content:'';position:absolute;right:-40px;top:-40px;width:180px;height:180px;
+  border-radius:50%;background:rgba(255,255,255,0.06)}
+.app-header::after{content:'';position:absolute;right:40px;bottom:-60px;width:120px;height:120px;
+  border-radius:50%;background:rgba(245,166,35,0.15)}
+.logo-wrap{width:48px;height:48px;background:var(--accent);border-radius:12px;
+  display:flex;align-items:center;justify-content:center;font-family:'Rajdhani',sans-serif;
+  font-weight:700;font-size:18px;color:var(--primary-dark);flex-shrink:0;z-index:1}
+.header-info{z-index:1;flex:1}
+.header-info h1{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;letter-spacing:0.5px}
+.header-info p{font-size:11.5px;opacity:0.82;margin-top:1px}
+.header-user{z-index:1;font-size:12px;text-align:right;line-height:1.6}
+.header-user strong{display:block;font-weight:600}
+.logout-btn{background:rgba(255,255,255,0.18);border:1px solid rgba(255,255,255,0.3);
+  color:#fff;padding:5px 12px;border-radius:8px;font-size:12px;cursor:pointer;
+  transition:all .2s;margin-top:4px}
+.logout-btn:hover{background:rgba(255,255,255,0.3)}
+
+/* ── CONTENT ── */
+.content{flex:1;padding:20px;max-width:560px;margin:0 auto;width:100%}
+
+/* ── CARD ── */
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);
+  padding:24px;margin-bottom:20px}
+.card-title{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;
+  color:var(--primary);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.card-title .icon{width:32px;height:32px;background:linear-gradient(135deg,var(--primary),var(--primary-light));
+  border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
+
+/* ── LOGIN PAGE ── */
+#page-login{background:linear-gradient(160deg,var(--primary-dark) 0%,var(--primary) 45%,#1a6cbf 100%)}
+.login-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
+.login-logo{text-align:center;margin-bottom:32px;animation:fadeDown .6s ease}
+.login-logo .big-logo{width:80px;height:80px;background:var(--accent);border-radius:20px;
+  display:flex;align-items:center;justify-content:center;font-family:'Rajdhani',sans-serif;
+  font-weight:700;font-size:28px;color:var(--primary-dark);margin:0 auto 14px;
+  box-shadow:0 8px 30px rgba(245,166,35,0.4)}
+.login-logo h1{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;color:#fff;letter-spacing:1px}
+.login-logo p{color:rgba(255,255,255,0.7);font-size:13px;margin-top:4px}
+.login-card{background:rgba(255,255,255,0.97);border-radius:20px;padding:28px;width:100%;max-width:400px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.25);animation:fadeUp .6s ease}
+.login-card h2{font-family:'Rajdhani',sans-serif;font-size:20px;color:var(--primary);margin-bottom:20px;font-weight:700}
+
+/* ── FORM ELEMENTS ── */
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:12.5px;font-weight:600;color:var(--muted);
+  text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px}
+.form-group input,.form-group select{width:100%;padding:12px 14px;border:1.5px solid var(--border);
+  border-radius:10px;font-size:14.5px;font-family:'Noto Sans',sans-serif;
+  transition:all .2s;background:#fff;color:var(--text)}
+.form-group input:focus,.form-group select:focus{outline:none;border-color:var(--primary);
+  box-shadow:0 0 0 3px rgba(27,79,155,0.1)}
+.form-group select{cursor:pointer}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:13px 24px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;
+  border:none;transition:all .25s;font-family:'Noto Sans',sans-serif}
+.btn-primary{background:linear-gradient(135deg,var(--primary) 0%,var(--primary-light) 100%);
+  color:#fff;box-shadow:0 4px 16px rgba(27,79,155,0.35)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(27,79,155,0.45)}
+.btn-primary:active{transform:translateY(0)}
+.btn-success{background:linear-gradient(135deg,#27AE60,#2ecc71);color:#fff;
+  box-shadow:0 4px 16px rgba(39,174,96,0.35)}
+.btn-success:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(39,174,96,0.45)}
+.btn-danger{background:linear-gradient(135deg,#E74C3C,#c0392b);color:#fff;
+  box-shadow:0 4px 16px rgba(231,76,60,0.35)}
+.btn-danger:hover{transform:translateY(-1px)}
+.btn-outline{background:transparent;border:2px solid var(--primary);color:var(--primary)}
+.btn-outline:hover{background:var(--primary);color:#fff}
+.btn-accent{background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;
+  box-shadow:0 4px 16px rgba(245,166,35,0.35)}
+.btn-sm{padding:8px 16px;font-size:13px;border-radius:9px}
+.btn-full{width:100%}
+.btn:disabled{opacity:0.55;cursor:not-allowed;transform:none}
+
+/* ── ATTENDANCE PAGE ── */
+.attendance-status-card{background:linear-gradient(135deg,var(--primary) 0%,var(--primary-light) 100%);
+  border-radius:var(--radius);padding:24px;color:#fff;margin-bottom:20px;
+  box-shadow:var(--shadow);text-align:center}
+.attendance-status-card h2{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;margin-bottom:4px}
+.attendance-status-card p{opacity:0.8;font-size:13px}
+.date-badge{background:rgba(255,255,255,0.2);padding:6px 14px;border-radius:20px;
+  font-size:12px;font-weight:600;display:inline-block;margin-top:8px}
+
+.att-btn-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0}
+.att-btn{padding:20px;border-radius:14px;border:none;cursor:pointer;font-family:'Noto Sans',sans-serif;
+  font-size:15px;font-weight:600;transition:all .25s;display:flex;flex-direction:column;
+  align-items:center;gap:6px}
+.att-btn .att-icon{font-size:32px;display:block}
+.att-present{background:linear-gradient(135deg,#e8f5e9,#c8e6c9);color:#1b5e20;border:2px solid #a5d6a7}
+.att-present:hover{background:linear-gradient(135deg,#27AE60,#2ecc71);color:#fff;transform:translateY(-2px);box-shadow:0 8px 20px rgba(39,174,96,0.4)}
+.att-absent{background:linear-gradient(135deg,#fce4ec,#f8bbd9);color:#880e4f;border:2px solid #f48fb1}
+.att-absent:hover{background:linear-gradient(135deg,#E74C3C,#c0392b);color:#fff;transform:translateY(-2px);box-shadow:0 8px 20px rgba(231,76,60,0.4)}
+.att-btn.selected.present{background:linear-gradient(135deg,#27AE60,#2ecc71);color:#fff;transform:scale(1.04)}
+.att-btn.selected.absent{background:linear-gradient(135deg,#E74C3C,#c0392b);color:#fff;transform:scale(1.04)}
+
+.status-banner{padding:14px 18px;border-radius:12px;font-size:13.5px;font-weight:600;
+  display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.status-banner.present{background:#e8f5e9;color:#1b5e20;border:1px solid #a5d6a7}
+.status-banner.absent{background:#fce4ec;color:#880e4f;border:1px solid #f48fb1}
+.status-banner.info{background:#e3f2fd;color:#0d47a1;border:1px solid #90caf9}
+
+.nav-link{display:flex;align-items:center;gap:10px;padding:14px 18px;border-radius:12px;
+  background:var(--bg);border:1.5px solid var(--border);text-decoration:none;color:var(--text);
+  font-weight:500;transition:all .2s;margin-bottom:10px}
+.nav-link:hover{border-color:var(--primary);background:#e8eef8;transform:translateX(4px)}
+.nav-link .nl-icon{font-size:22px}
+.nav-link .nl-text strong{display:block;font-size:14.5px}
+.nav-link .nl-text span{font-size:12px;color:var(--muted)}
+.nav-link .nl-arrow{margin-left:auto;color:var(--primary);font-size:18px}
+
+/* ── SERVICE REPORT ── */
+.section-header{background:var(--primary);color:#fff;padding:10px 14px;border-radius:10px;
+  font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;margin:16px 0 10px;
+  display:flex;align-items:center;gap:8px}
+.param-row{display:flex;align-items:center;gap:8px;padding:10px 0;
+  border-bottom:1px solid var(--border)}
+.param-row:last-child{border-bottom:none}
+.param-info{flex:1}
+.param-name{font-size:13.5px;font-weight:500}
+.param-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.param-wt{background:var(--primary);color:#fff;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:600}
+.param-wt.wt2{background:var(--accent);color:var(--primary-dark)}
+.param-controls{display:flex;align-items:center;gap:4px}
+.count-btn{width:30px;height:30px;border:none;border-radius:8px;font-size:18px;cursor:pointer;
+  font-weight:700;transition:all .15s;display:flex;align-items:center;justify-content:center}
+.count-btn.minus{background:#fce4ec;color:#c62828}
+.count-btn.minus:hover{background:#c62828;color:#fff}
+.count-btn.plus{background:#e8f5e9;color:#1b5e20}
+.count-btn.plus:hover{background:#1b5e20;color:#fff}
+.count-input{width:52px;height:30px;text-align:center;border:1.5px solid var(--border);
+  border-radius:8px;font-size:14px;font-weight:600}
+.count-input:focus{outline:none;border-color:var(--primary)}
+.gap-badge{font-size:11px;font-weight:600;padding:3px 8px;border-radius:8px;
+  background:#fff3e0;color:#e65100;min-width:48px;text-align:center;white-space:nowrap}
+.gap-badge.met{background:#e8f5e9;color:#1b5e20}
+
+.score-bar{background:linear-gradient(135deg,var(--primary),var(--accent));
+  border-radius:14px;padding:16px 20px;color:#fff;margin:16px 0;
+  display:flex;align-items:center;gap:16px}
+.score-val{font-family:'Rajdhani',sans-serif;font-size:36px;font-weight:700}
+.score-label{font-size:12px;opacity:0.85}
+
+.missed-highlight{color:var(--danger);font-weight:700}
+
+.btn-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.55);
+  z-index:1000;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.active{display:flex}
+.modal{background:#fff;border-radius:20px;padding:28px;width:100%;max-width:440px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.3);animation:fadeUp .3s ease;max-height:90vh;overflow-y:auto}
+.modal h3{font-family:'Rajdhani',sans-serif;font-size:20px;color:var(--primary);margin-bottom:12px;font-weight:700}
+.modal-wa-text{background:#e7f5ea;border:1px solid #a5d6a7;border-radius:10px;
+  padding:14px;font-size:13px;line-height:1.7;font-family:monospace;
+  white-space:pre-wrap;word-break:break-word;max-height:280px;overflow-y:auto;margin:12px 0}
+.modal-btns{display:flex;gap:10px;margin-top:16px}
+.modal-btns .btn{flex:1}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:#1a2332;color:#fff;padding:12px 22px;border-radius:12px;font-size:14px;
+  z-index:2000;transition:transform .3s ease;pointer-events:none;white-space:nowrap;
+  box-shadow:0 8px 30px rgba(0,0,0,0.3)}
+#toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ── PASSWORD CHANGE ── */
+.pwd-strength{height:4px;border-radius:4px;margin-top:6px;transition:all .3s;background:var(--border)}
+.pwd-strength.weak{background:var(--danger);width:33%}
+.pwd-strength.medium{background:var(--warning);width:66%}
+.pwd-strength.strong{background:var(--success);width:100%}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+.pulse{animation:pulse 2s ease infinite}
+
+/* ── LOADING ── */
+.spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--primary);
+  border-radius:50%;animation:spin .8s linear infinite;margin:20px auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(255,255,255,0.85);
+  z-index:900;display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px}
+.loading-overlay.active{display:flex}
+.loading-overlay p{color:var(--primary);font-weight:600;font-size:14px}
+
+/* ── RESPONSIVE ── */
+@media(max-width:400px){
+  .content{padding:14px}
+  .card{padding:18px}
+  .att-btn{padding:16px}
+}
+
+.reminder-banner{background:linear-gradient(135deg,#fff3e0,#ffe0b2);border:1px solid #ffcc80;
+  border-radius:12px;padding:14px 16px;margin-bottom:16px;display:flex;gap:10px;align-items:flex-start}
+.reminder-banner .ri{font-size:22px}
+.reminder-banner p{font-size:13px;color:#e65100;font-weight:500}
+
+.info-chip{background:#e3f2fd;color:#1565c0;padding:4px 10px;border-radius:10px;font-size:12px;font-weight:600}
+
+.already-done-wrap{text-align:center;padding:30px 20px}
+.already-done-wrap .big-check{font-size:64px;margin-bottom:12px}
+.already-done-wrap h3{font-family:'Rajdhani',sans-serif;font-size:22px;color:var(--success);font-weight:700}
+.already-done-wrap p{color:var(--muted);font-size:14px;margin-top:6px}
+
+input[type=number]::-webkit-inner-spin-button{opacity:1}
+</style>
+</head>
+<body>
+
+<!-- LOADING OVERLAY -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <p id="loadingText">Please wait…</p>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- ════════════════════════════════
+     PAGE: LOGIN
+════════════════════════════════ -->
+<div class="page active" id="page-login">
+  <div class="login-wrap">
+    <div class="login-logo">
+      <div class="big-logo">SS</div>
+      <h1>Seva Sarathi</h1>
+      <p>Malappuram Region · State Bank of India</p>
+    </div>
+    <div class="login-card">
+      <h2>🔐 Sign In</h2>
+      <div class="form-group">
+        <label>Employee Code</label>
+        <input type="text" id="loginEmpCode" placeholder="Enter your employee code" autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="loginPassword" placeholder="Enter password" autocomplete="current-password">
+      </div>
+      <button class="btn btn-primary btn-full" onclick="doLogin()">Sign In →</button>
+      <p style="text-align:center;font-size:12px;color:var(--muted);margin-top:14px">
+        Default password: <strong>Sbi@1234</strong>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     PAGE: CHANGE PASSWORD
+════════════════════════════════ -->
+<div class="page" id="page-changepass">
+  <div class="app-header">
+    <div class="logo-wrap">SS</div>
+    <div class="header-info"><h1>Seva Sarathi</h1><p>Change Password</p></div>
+  </div>
+  <div class="content">
+    <div class="card">
+      <div class="card-title"><span class="icon">🔑</span> Set New Password</div>
+      <div class="status-banner info" style="margin-bottom:16px">
+        🔔 You must change your password before continuing.
+      </div>
+      <div class="form-group">
+        <label>Current Password</label>
+        <input type="password" id="cpCurrent" placeholder="Current password">
+      </div>
+      <div class="form-group">
+        <label>New Password</label>
+        <input type="password" id="cpNew" placeholder="Min 8 chars, not Sbi@1234" oninput="checkPwdStrength()">
+        <div class="pwd-strength" id="pwdStrengthBar"></div>
+        <p id="pwdStrengthText" style="font-size:11px;color:var(--muted);margin-top:4px"></p>
+      </div>
+      <div class="form-group">
+        <label>Confirm New Password</label>
+        <input type="password" id="cpConfirm" placeholder="Repeat new password">
+      </div>
+      <button class="btn btn-primary btn-full" onclick="doChangePassword()">Update Password</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     PAGE: ATTENDANCE
+════════════════════════════════ -->
+<div class="page" id="page-attendance">
+  <div class="app-header">
+    <div class="logo-wrap">SS</div>
+    <div class="header-info"><h1>Seva Sarathi</h1><p>Malappuram Region</p></div>
+    <div class="header-user" id="headerUser">
+      <strong id="headerName">—</strong>
+      <span id="headerBranch">—</span>
+      <button class="logout-btn" onclick="doLogout()">Logout</button>
+    </div>
+  </div>
+  <div class="content">
+
+    <div id="attReminderBanner" class="reminder-banner" style="display:none">
+      <span class="ri">⏰</span>
+      <p>Reminder: Please mark your attendance for today!</p>
+    </div>
+
+    <div class="attendance-status-card">
+      <div style="font-size:36px">📋</div>
+      <h2>Attendance</h2>
+      <p id="attUserInfo">Mark your attendance for today</p>
+      <div class="date-badge" id="attDateBadge">—</div>
+    </div>
+
+    <!-- Already marked -->
+    <div id="attAlreadyDone" style="display:none">
+      <div class="already-done-wrap">
+        <div class="big-check" id="attStatusEmoji">✅</div>
+        <h3 id="attStatusText">Attendance Marked!</h3>
+        <p id="attStatusSub">Your attendance has been recorded for today.</p>
+      </div>
+    </div>
+
+    <!-- Mark attendance -->
+    <div id="attMarkForm">
+      <div class="card">
+        <div class="card-title"><span class="icon">✋</span> Mark Attendance</div>
+        <div class="att-btn-row">
+          <button class="att-btn att-present" id="btnPresent" onclick="selectAtt('Present')">
+            <span class="att-icon">✅</span>
+            <span>Present</span>
+          </button>
+          <button class="att-btn att-absent" id="btnAbsent" onclick="selectAtt('Absent')">
+            <span class="att-icon">❌</span>
+            <span>Absent</span>
+          </button>
+        </div>
+        <button class="btn btn-primary btn-full" id="btnSubmitAtt" onclick="submitAttendance()" disabled>
+          Submit Attendance
+        </button>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <a class="nav-link" id="navToReport" onclick="goToServiceReport()" style="cursor:pointer">
+      <span class="nl-icon">📊</span>
+      <div class="nl-text">
+        <strong>Service Report</strong>
+        <span>Submit today's daily report</span>
+      </div>
+      <span class="nl-arrow">›</span>
+    </a>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     PAGE: SERVICE REPORT
+════════════════════════════════ -->
+<div class="page" id="page-report">
+  <div class="app-header">
+    <div class="logo-wrap">SS</div>
+    <div class="header-info"><h1>Service Report</h1><p id="reportHeaderSub">Daily Report</p></div>
+    <div class="header-user">
+      <strong id="reportHeaderName">—</strong>
+      <button class="logout-btn" onclick="showPage('page-attendance')">← Back</button>
+    </div>
+  </div>
+  <div class="content">
+    <div id="reportAlreadyDone" style="display:none">
+      <div class="already-done-wrap">
+        <div class="big-check">📤</div>
+        <h3>Report Submitted!</h3>
+        <p>You have already submitted your service report for today.</p>
+        <p style="margin-top:8px;font-size:12px;color:var(--muted)">Score: <strong id="reportDoneScore">—</strong></p>
+      </div>
+    </div>
+
+    <div id="reportForm">
+      <!-- Score live -->
+      <div class="score-bar">
+        <div>
+          <div class="score-label">YOUR SCORE (YS)</div>
+          <div class="score-val" id="liveScore">0</div>
+        </div>
+        <div style="flex:1">
+          <div style="font-size:12px;opacity:0.8;margin-bottom:4px">Weighted total of all entries</div>
+          <div id="missedCount" style="font-size:12px;background:rgba(255,255,255,0.2);padding:4px 10px;border-radius:8px;display:inline-block">
+            0 missed parameters
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: YONO -->
+      <div class="section-header">📱 YONO Channel</div>
+      <div class="card" style="padding:12px 16px" id="sect-yono">
+        <!-- params injected by JS -->
+      </div>
+
+      <!-- SECTION: WhatsApp Banking -->
+      <div class="section-header">💬 WhatsApp Banking</div>
+      <div class="card" style="padding:12px 16px" id="sect-wb">
+      </div>
+
+      <!-- SECTION: Toll Free -->
+      <div class="section-header">📞 Toll Free</div>
+      <div class="card" style="padding:12px 16px" id="sect-tf">
+      </div>
+
+      <!-- SECTION: Others -->
+      <div class="section-header">🏦 Digital & Others</div>
+      <div class="card" style="padding:12px 16px" id="sect-other">
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-outline" onclick="clearReport()">🗑 Clear</button>
+        <button class="btn btn-primary" onclick="submitReport()">Submit ✓</button>
+      </div>
+      <p style="text-align:center;font-size:11.5px;color:var(--muted);margin-top:10px">
+        📌 Reminder set at 4:15 PM to submit this report
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     WHATSAPP SHARE MODAL
+════════════════════════════════ -->
+<div class="modal-overlay" id="waModal">
+  <div class="modal">
+    <h3>📤 Share on WhatsApp</h3>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:8px">Report formatted for WhatsApp. Copy and share:</p>
+    <div class="modal-wa-text" id="waText"></div>
+    <div class="modal-btns">
+      <button class="btn btn-outline btn-sm" onclick="copyWaText()">📋 Copy</button>
+      <button class="btn btn-accent btn-sm" onclick="openWhatsApp()">💬 Open WA</button>
+      <button class="btn btn-success btn-sm" onclick="closeWaModal()">Done ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRMATION MODAL -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal">
+    <h3 id="confirmTitle">Confirm</h3>
+    <p id="confirmMsg" style="font-size:14px;color:var(--muted);margin:12px 0"></p>
+    <div class="modal-btns">
+      <button class="btn btn-outline btn-sm" onclick="closeConfirm(false)">Cancel</button>
+      <button class="btn btn-primary btn-sm" onclick="closeConfirm(true)">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════
+   CONFIGURATION — REPLACE THIS URL
+   after deploying your Google Apps Script
+══════════════════════════════════════ */
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz3CIog5VnbWdDKLDK4MvZZU8I8gfEilNGqxnNdDEB-mDP7kUSee7stC6_0Id37rcVNyw/exec';
+
+/* ══════════════════════════════
+   MASTER DATA (fallback / offline)
+══════════════════════════════ */
+const MASTER_DATA = [
+  {branch:"MALAPPURAM",name:"ANJALI K"},
+  {branch:"KOTTAKKAL",name:"ASWATHY M K"},
+  {branch:"PUTHANATHANI",name:"GOPIKA"},
+  {branch:"PULAMANTHOLE",name:"ATHIRA N"},
+  {branch:"VALANCHERRY",name:"ANAGHA M"},
+  {branch:"PERINTHALMANNA",name:"ARATHI ANIL"},
+  {branch:"POOKKOTTUMPADAM",name:"ANOOP"},
+  {branch:"MALAPPURAM CIVIL STATION",name:"AJMAL"},
+  {branch:"KARUVARAKUNDU",name:"NANDHANA A"},
+  {branch:"NRI TIRUR",name:"VINITHA M"},
+  {branch:"MANIMOOLY",name:"SANJAY P S"},
+  {branch:"WANDOOR",name:"PRASANTH K"},
+  {branch:"TIRUR",name:"ASWATHY S K"},
+  {branch:"PANG SOUTH PANG",name:"SARANYA T"},
+  {branch:"EDAPPAL TOWN",name:"ASHEEN"},
+  {branch:"PONNANI",name:"ASWATHY A K"},
+  {branch:"EDAKKARA",name:"RUKSANA THASNI K H"},
+  {branch:"PANDIKKAD",name:"SRUTHI P V"},
+  {branch:"CHANGARAMKULAM",name:"SINDHU"},
+  {branch:"KUTTIPURAM",name:"ASHA KRISHNAN K P"},
+  {branch:"MANJERI",name:"SRUTHI K M"},
+  {branch:"MELATTUR",name:"MOHAMAD SHAHEER KALATHINGAL THODI"}
+];
+
+/* ══════════════════════════════
+   PARAMETERS
+══════════════════════════════ */
+const PARAMS = [
+  {id:'p1', name:'YONO Registration', channel:'yono', wt:2},
+  {id:'p2', name:'WhatsApp Banking Reg', channel:'wb', wt:2},
+  {id:'p3', name:'CBDC Registration', channel:'other', wt:2},
+  {id:'p4', name:'YONO Cash (Withdrawal & Deposit)', channel:'yono', wt:1},
+  {id:'p5', name:'CDM/GCC Deposit', channel:'other', wt:1},
+  {id:'p6', name:'Feedbacks', channel:'other', wt:1},
+  {id:'p7', name:'APY Done', channel:'other', wt:1},
+  {id:'p8', name:'Term Deposit (YONO)', channel:'yono', wt:1},
+  {id:'p9', name:'PAI Done (YONO)', channel:'yono', wt:1},
+  {id:'p10',name:'ATM Card Issue (YONO/Toll Free)', channel:'tf', wt:1},
+  {id:'p11',name:'Cheque Book Issue (YONO/Tollfree/WB)', channel:'yono', wt:1},
+  {id:'p12',name:'Form 15G/H (YONO/WB)', channel:'yono', wt:1},
+  {id:'p13',name:'KYC Update (YONO/WB)', channel:'yono', wt:1},
+  {id:'p14',name:'Nominee Update (YONO)', channel:'yono', wt:1},
+  {id:'p15',name:'Transfer Done (YONO)', channel:'yono', wt:1},
+  {id:'p16',name:'Statement & Enquiry (YONO/WB/Toll free)', channel:'tf', wt:1}
+];
+
+/* ══════════════════════════════
+   STATE
+══════════════════════════════ */
+let currentUser = null;
+let selectedAtt = null;
+let budgetData = {};
+let confirmCallback = null;
+let waTextContent = '';
+
+function getToday(){
+  const d = new Date();
+  return d.toISOString().split('T')[0]; // YYYY-MM-DD
+}
+function formatDateDisplay(d){
+  const opts={weekday:'long',year:'numeric',month:'long',day:'numeric'};
+  return new Date(d+'T00:00:00').toLocaleDateString('en-IN',opts);
+}
+
+/* ══════════════════════════════
+   PAGE NAVIGATION
+══════════════════════════════ */
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+/* ══════════════════════════════
+   LOADING & TOAST
+══════════════════════════════ */
+function showLoading(msg='Please wait…'){
+  document.getElementById('loadingText').textContent=msg;
+  document.getElementById('loadingOverlay').classList.add('active');
+}
+function hideLoading(){document.getElementById('loadingOverlay').classList.remove('active')}
+
+function showToast(msg, duration=3000){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),duration);
+}
+
+/* ══════════════════════════════
+   API CALLS
+══════════════════════════════ */
+async function apiCall(action, data={}){
+  const payload = {action, ...data};
+  try {
+    const res = await fetch(SCRIPT_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    });
+    return await res.json();
+  } catch(e) {
+    console.error('API error',e);
+    return {success:false, error:e.message};
+  }
+}
+
+/* ══════════════════════════════
+   LOGIN
+══════════════════════════════ */
+async function doLogin(){
+  const empCode = document.getElementById('loginEmpCode').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  if(!empCode||!password){showToast('⚠️ Enter employee code and password');return}
+  showLoading('Verifying credentials…');
+  const res = await apiCall('login',{empCode,password});
+  hideLoading();
+  if(res.success){
+    currentUser = {empCode, name:res.name, branch:res.branch, firstLogin:res.firstLogin};
+    localStorage.setItem('ss_user', JSON.stringify({empCode,branch:res.branch,name:res.name}));
+    if(res.firstLogin){
+      showPage('page-changepass');
+    } else {
+      enterApp();
+    }
+  } else {
+    showToast('❌ '+(res.error||'Invalid credentials'));
+  }
+}
+
+document.getElementById('loginPassword').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
+document.getElementById('loginEmpCode').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('loginPassword').focus()});
+
+/* ══════════════════════════════
+   CHANGE PASSWORD
+══════════════════════════════ */
+function checkPwdStrength(){
+  const v=document.getElementById('cpNew').value;
+  const bar=document.getElementById('pwdStrengthBar');
+  const txt=document.getElementById('pwdStrengthText');
+  if(v.length===0){bar.className='pwd-strength';txt.textContent='';return}
+  const strong=/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}/.test(v);
+  const medium=/(?=.*[a-zA-Z])(?=.*\d).{6,}/.test(v);
+  if(strong){bar.className='pwd-strength strong';txt.textContent='Strong ✓'}
+  else if(medium){bar.className='pwd-strength medium';txt.textContent='Medium – add symbols for stronger'}
+  else{bar.className='pwd-strength weak';txt.textContent='Weak – use 8+ chars with letters & numbers'}
+}
+
+async function doChangePassword(){
+  const cur=document.getElementById('cpCurrent').value;
+  const n=document.getElementById('cpNew').value;
+  const c=document.getElementById('cpConfirm').value;
+  if(!cur||!n||!c){showToast('⚠️ Fill all fields');return}
+  if(n==='Sbi@1234'){showToast('❌ New password cannot be the default');return}
+  if(n.length<6){showToast('❌ Min 6 characters required');return}
+  if(n!==c){showToast('❌ Passwords do not match');return}
+  showLoading('Updating password…');
+  const res = await apiCall('changePassword',{empCode:currentUser.empCode,oldPassword:cur,newPassword:n});
+  hideLoading();
+  if(res.success){
+    showToast('✅ Password changed!');
+    currentUser.firstLogin=false;
+    enterApp();
+  } else {
+    showToast('❌ '+(res.error||'Error changing password'));
+  }
+}
+
+/* ══════════════════════════════
+   ENTER APP
+══════════════════════════════ */
+async function enterApp(){
+  document.getElementById('headerName').textContent=currentUser.name;
+  document.getElementById('headerBranch').textContent=currentUser.branch;
+  document.getElementById('reportHeaderName').textContent=currentUser.name;
+  document.getElementById('attUserInfo').textContent=currentUser.name+' · '+currentUser.branch;
+  document.getElementById('attDateBadge').textContent=formatDateDisplay(getToday());
+  document.getElementById('reportHeaderSub').textContent=currentUser.branch+' · '+formatDateDisplay(getToday());
+  showPage('page-attendance');
+  await checkAttendanceStatus();
+  scheduleBrowserReminders();
+  loadBudgetData();
+  buildReportForm();
+}
+
+/* ══════════════════════════════
+   ATTENDANCE
+══════════════════════════════ */
+async function checkAttendanceStatus(){
+  const res = await apiCall('getAttendance',{empCode:currentUser.empCode,date:getToday()});
+  if(res.success && res.status){
+    showAttendanceDone(res.status);
+  } else {
+    checkAttReminderTime();
+  }
+}
+
+function checkAttReminderTime(){
+  const h=new Date().getHours();
+  const m=new Date().getMinutes();
+  if(h>=10||(h===10&&m>=0)){
+    document.getElementById('attReminderBanner').style.display='flex';
+  }
+}
+
+function showAttendanceDone(status){
+  document.getElementById('attMarkForm').style.display='none';
+  document.getElementById('attAlreadyDone').style.display='block';
+  if(status==='Present'){
+    document.getElementById('attStatusEmoji').textContent='✅';
+    document.getElementById('attStatusText').textContent='Attendance Marked: Present';
+    document.getElementById('attStatusSub').textContent='You are marked Present today. Please submit your service report.';
+  } else {
+    document.getElementById('attStatusEmoji').textContent='❌';
+    document.getElementById('attStatusText').textContent='Attendance Marked: Absent';
+    document.getElementById('attStatusSub').textContent='You are marked Absent for today.';
+  }
+  document.getElementById('attReminderBanner').style.display='none';
+}
+
+function selectAtt(status){
+  selectedAtt=status;
+  document.getElementById('btnPresent').classList.remove('selected','present');
+  document.getElementById('btnAbsent').classList.remove('selected','absent');
+  if(status==='Present'){
+    document.getElementById('btnPresent').classList.add('selected','present');
+  } else {
+    document.getElementById('btnAbsent').classList.add('selected','absent');
+  }
+  document.getElementById('btnSubmitAtt').disabled=false;
+}
+
+async function submitAttendance(){
+  if(!selectedAtt){showToast('⚠️ Select Present or Absent');return}
+  showConfirm(
+    'Mark Attendance',
+    `Confirm marking yourself as ${selectedAtt} for ${formatDateDisplay(getToday())}?`,
+    async()=>{
+      showLoading('Saving attendance…');
+      const res = await apiCall('markAttendance',{
+        empCode:currentUser.empCode,
+        branch:currentUser.branch,
+        name:currentUser.name,
+        status:selectedAtt,
+        date:getToday()
+      });
+      hideLoading();
+      if(res.success){
+        showToast('✅ Attendance saved!');
+        showAttendanceDone(selectedAtt);
+      } else {
+        showToast('❌ '+(res.error||'Error saving attendance'));
+      }
+    }
+  );
+}
+
+/* ══════════════════════════════
+   SERVICE REPORT
+══════════════════════════════ */
+function buildReportForm(){
+  const sections={yono:'sect-yono',wb:'sect-wb',tf:'sect-tf',other:'sect-other'};
+  Object.values(sections).forEach(id=>document.getElementById(id).innerHTML='');
+  PARAMS.forEach(p=>{
+    const container=document.getElementById(sections[p.channel]);
+    if(!container)return;
+    const budget=budgetData[p.id]||0;
+    const div=document.createElement('div');
+    div.className='param-row';
+    div.id='row-'+p.id;
+    div.innerHTML=`
+      <div class="param-info">
+        <div class="param-name">${p.name}</div>
+        <div class="param-sub">Budget: <span id="bud-${p.id}">${budget}</span> | <span id="gap-label-${p.id}">Gap: ${budget}</span></div>
+      </div>
+      <span class="param-wt ${p.wt===2?'wt2':''}">wt:${p.wt}</span>
+      <div class="param-controls">
+        <button class="count-btn minus" onclick="adjustCount('${p.id}',-1)">−</button>
+        <input class="count-input" type="number" id="inp-${p.id}" value="0" min="0" 
+          oninput="onParamInput('${p.id}')" onchange="onParamInput('${p.id}')">
+        <button class="count-btn plus" onclick="adjustCount('${p.id}',1)">+</button>
+      </div>
+      <span class="gap-badge" id="gap-${p.id}">${budget}</span>`;
+    container.appendChild(div);
+  });
+}
+
+function adjustCount(id,delta){
+  const inp=document.getElementById('inp-'+id);
+  const val=Math.max(0,(parseInt(inp.value)||0)+delta);
+  inp.value=val;
+  onParamInput(id);
+}
+
+function onParamInput(id){
+  updateGap(id);
+  updateLiveScore();
+}
+
+function updateGap(id){
+  const val=parseInt(document.getElementById('inp-'+id).value)||0;
+  const budget=budgetData[id]||0;
+  const gap=Math.max(0,budget-val);
+  const gapEl=document.getElementById('gap-'+id);
+  const row=document.getElementById('row-'+id);
+  gapEl.textContent=gap>0?gap:'✓';
+  gapEl.className='gap-badge'+(gap===0?' met':'');
+  document.getElementById('gap-label-'+id).textContent='Gap: '+gap;
+  row.style.background=(val===0&&budget>0)?'rgba(231,76,60,0.04)':'';
+}
+
+function updateLiveScore(){
+  let score=0;
+  let missed=0;
+  PARAMS.forEach(p=>{
+    const v=parseInt(document.getElementById('inp-'+p.id)?.value)||0;
+    score+=v*p.wt;
+    if(v===0)missed++;
+  });
+  document.getElementById('liveScore').textContent=score;
+  document.getElementById('missedCount').textContent=
+    missed===0?'🎉 All parameters filled!':missed+' missed parameter'+(missed>1?'s':'');
+}
+
+function clearReport(){
+  PARAMS.forEach(p=>{
+    const inp=document.getElementById('inp-'+p.id);
+    if(inp)inp.value=0;
+    updateGap(p.id);
+  });
+  updateLiveScore();
+}
+
+async function loadBudgetData(){
+  const res = await apiCall('getBudget',{branch:currentUser.branch,month:getToday().substring(0,7)});
+  if(res.success && res.budget){
+    budgetData=res.budget;
+    buildReportForm();
+    updateLiveScore();
+  }
+}
+
+async function goToServiceReport(){
+  // Check if present today
+  const attRes = await apiCall('getAttendance',{empCode:currentUser.empCode,date:getToday()});
+  if(!attRes.success||attRes.status!=='Present'){
+    showToast('⚠️ You must be marked Present to submit a report');return;
+  }
+  // Check if report already submitted
+  const repRes = await apiCall('getReport',{empCode:currentUser.empCode,date:getToday()});
+  if(repRes.success && repRes.submitted){
+    document.getElementById('reportAlreadyDone').style.display='block';
+    document.getElementById('reportForm').style.display='none';
+    document.getElementById('reportDoneScore').textContent=repRes.score||'—';
+  } else {
+    document.getElementById('reportAlreadyDone').style.display='none';
+    document.getElementById('reportForm').style.display='block';
+  }
+  showPage('page-report');
+}
+
+async function submitReport(){
+  const values={};
+  let score=0;
+  const missed=[];
+  PARAMS.forEach(p=>{
+    const v=parseInt(document.getElementById('inp-'+p.id)?.value)||0;
+    values[p.id]=v;
+    score+=v*p.wt;
+    if(v===0)missed.push(p.name);
+  });
+
+  showConfirm('Submit Report',`Submit service report with score ${score}?`,async()=>{
+    showLoading('Submitting report…');
+    const res=await apiCall('submitReport',{
+      empCode:currentUser.empCode,
+      branch:currentUser.branch,
+      name:currentUser.name,
+      date:getToday(),
+      values,score
+    });
+    hideLoading();
+    if(res.success){
+      showToast('✅ Report submitted!');
+      const waMsg=buildWaMessage(score,missed,values);
+      waTextContent=waMsg;
+      document.getElementById('waText').textContent=waMsg;
+      document.getElementById('waModal').classList.add('active');
+    } else {
+      showToast('❌ '+(res.error||'Error submitting report'));
+    }
+  });
+}
+
+function buildWaMessage(score,missed,values){
+  const today=formatDateDisplay(getToday());
+  let msg=`📊 *Seva Sarathi – Daily Report*\n`;
+  msg+=`📍 Branch: ${currentUser.branch}\n`;
+  msg+=`👤 Name: ${currentUser.name}\n`;
+  msg+=`📅 Date: ${today}\n`;
+  msg+=`⭐ Score (YS): *${score}*\n\n`;
+  msg+=`📋 *Service Details:*\n`;
+  PARAMS.forEach(p=>{
+    const v=values[p.id]||0;
+    msg+=`• ${p.name}: ${v}\n`;
+  });
+  if(missed.length>0){
+    msg+=`\n⚠️ *I missed these:*\n`;
+    missed.forEach((m,i)=>msg+=`${i+1}. ${m}\n`);
+  }
+  msg+=`\n_Submitted via Seva Sarathi App_`;
+  return msg;
+}
+
+function copyWaText(){
+  navigator.clipboard.writeText(waTextContent).then(()=>showToast('📋 Copied!')).catch(()=>{
+    const el=document.createElement('textarea');
+    el.value=waTextContent;document.body.appendChild(el);el.select();
+    document.execCommand('copy');document.body.removeChild(el);showToast('📋 Copied!');
+  });
+}
+
+function openWhatsApp(){
+  window.open('https://wa.me/?text='+encodeURIComponent(waTextContent),'_blank');
+}
+
+function closeWaModal(){
+  document.getElementById('waModal').classList.remove('active');
+  document.getElementById('reportAlreadyDone').style.display='block';
+  document.getElementById('reportForm').style.display='none';
+}
+
+/* ══════════════════════════════
+   CONFIRM MODAL
+══════════════════════════════ */
+function showConfirm(title,msg,cb){
+  document.getElementById('confirmTitle').textContent=title;
+  document.getElementById('confirmMsg').textContent=msg;
+  confirmCallback=cb;
+  document.getElementById('confirmModal').classList.add('active');
+}
+function closeConfirm(ok){
+  document.getElementById('confirmModal').classList.remove('active');
+  if(ok && confirmCallback)confirmCallback();
+  confirmCallback=null;
+}
+
+/* ══════════════════════════════
+   NOTIFICATIONS / REMINDERS
+══════════════════════════════ */
+function scheduleBrowserReminders(){
+  if(!('Notification' in window))return;
+  Notification.requestPermission().then(perm=>{
+    if(perm==='granted'){
+      scheduleNotif(10,0,'⏰ Seva Sarathi Reminder','Please mark your attendance for today!');
+      scheduleNotif(16,15,'📋 Report Reminder','Time to submit your service report!');
+    }
+  });
+}
+
+function scheduleNotif(targetH,targetM,title,body){
+  const now=new Date();
+  const target=new Date();
+  target.setHours(targetH,targetM,0,0);
+  if(target<=now) return; // already passed
+  const delay=target-now;
+  setTimeout(()=>new Notification(title,{body,icon:'/favicon.ico'}),delay);
+}
+
+/* ══════════════════════════════
+   LOGOUT
+══════════════════════════════ */
+function doLogout(){
+  currentUser=null;
+  localStorage.removeItem('ss_user');
+  document.getElementById('loginEmpCode').value='';
+  document.getElementById('loginPassword').value='';
+  showPage('page-login');
+}
+
+/* ══════════════════════════════
+   AUTO-LOGIN CHECK
+══════════════════════════════ */
+(async function init(){
+  const saved=localStorage.getItem('ss_user');
+  if(saved){
+    try{
+      const u=JSON.parse(saved);
+      // Re-validate session via API
+      showLoading('Restoring session…');
+      const res=await apiCall('validateSession',{empCode:u.empCode});
+      hideLoading();
+      if(res.success){
+        currentUser={empCode:u.empCode,name:res.name||u.name,branch:res.branch||u.branch,firstLogin:false};
+        enterApp();
+        return;
+      }
+    }catch(e){}
+    hideLoading();
+  }
+  showPage('page-login');
+})();
+</script>
+</body>
+</html>

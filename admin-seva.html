@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Portal – Seva Sarathi</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Noto+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#0f2d5e;--primary-mid:#1B4F9B;--primary-light:#2d6bc7;
+  --accent:#F5A623;--accent-dark:#d4891a;
+  --success:#27AE60;--danger:#E74C3C;--warning:#F39C12;
+  --bg:#f0f3f8;--card:#fff;--text:#1a2332;--muted:#6b7a90;
+  --border:#dde3ec;--shadow:0 4px 24px rgba(15,45,94,0.12);
+  --radius:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex}
+
+/* ── SIDEBAR ── */
+.sidebar{width:260px;background:linear-gradient(180deg,var(--primary) 0%,#0d2448 100%);
+  min-height:100vh;display:flex;flex-direction:column;flex-shrink:0;
+  box-shadow:4px 0 20px rgba(15,45,94,0.25);position:fixed;top:0;left:0;z-index:100}
+.sidebar-logo{padding:24px 20px;border-bottom:1px solid rgba(255,255,255,0.1)}
+.sidebar-logo .logo-mark{width:44px;height:44px;background:var(--accent);border-radius:10px;
+  display:flex;align-items:center;justify-content:center;font-family:'Rajdhani',sans-serif;
+  font-weight:700;font-size:18px;color:var(--primary);margin-bottom:10px}
+.sidebar-logo h2{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:#fff}
+.sidebar-logo p{font-size:11px;color:rgba(255,255,255,0.55);margin-top:2px}
+.sidebar-badge{background:var(--accent);color:var(--primary);font-size:10px;font-weight:700;
+  padding:2px 8px;border-radius:10px;margin-left:8px}
+
+.nav-items{flex:1;padding:16px 12px;overflow-y:auto}
+.nav-item{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:10px;
+  color:rgba(255,255,255,0.7);cursor:pointer;transition:all .2s;margin-bottom:4px;font-size:14px}
+.nav-item:hover{background:rgba(255,255,255,0.1);color:#fff}
+.nav-item.active{background:rgba(245,166,35,0.25);color:var(--accent);font-weight:600}
+.nav-item .ni-icon{font-size:18px;flex-shrink:0}
+
+.sidebar-footer{padding:16px;border-top:1px solid rgba(255,255,255,0.1);
+  font-size:11px;color:rgba(255,255,255,0.4);text-align:center}
+
+/* ── MAIN ── */
+.main{flex:1;margin-left:260px;display:flex;flex-direction:column;min-height:100vh}
+.topbar{background:#fff;padding:16px 28px;display:flex;align-items:center;justify-content:space-between;
+  box-shadow:0 2px 12px rgba(0,0,0,0.07);position:sticky;top:0;z-index:50}
+.topbar h1{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--primary)}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.badge-live{background:#e8f5e9;color:#1b5e20;font-size:12px;font-weight:600;
+  padding:4px 12px;border-radius:20px;display:flex;align-items:center;gap:6px}
+.badge-live::before{content:'';width:8px;height:8px;background:var(--success);
+  border-radius:50%;animation:pulse 1.5s ease infinite}
+
+.content{flex:1;padding:24px 28px}
+
+/* ── CARDS ── */
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;margin-bottom:20px}
+.card-title{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--primary);
+  margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.card-title .ct-left{display:flex;align-items:center;gap:8px}
+.ct-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--primary-mid),var(--primary-light));
+  border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
+
+/* ── STAT CARDS ── */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:24px}
+.stat-card{background:var(--card);border-radius:14px;padding:18px;box-shadow:var(--shadow);
+  border-left:4px solid var(--primary-mid)}
+.stat-card.sc-green{border-left-color:var(--success)}
+.stat-card.sc-red{border-left-color:var(--danger)}
+.stat-card.sc-orange{border-left-color:var(--warning)}
+.stat-val{font-family:'Rajdhani',sans-serif;font-size:32px;font-weight:700;color:var(--primary)}
+.stat-label{font-size:12px;color:var(--muted);margin-top:2px}
+
+/* ── TABLE ── */
+.table-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+thead tr{background:linear-gradient(135deg,var(--primary) 0%,var(--primary-mid) 100%);color:#fff}
+th{padding:12px 14px;text-align:left;font-family:'Rajdhani',sans-serif;font-weight:700;
+  font-size:14px;letter-spacing:0.3px;white-space:nowrap}
+td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:#f7f9fc}
+tbody tr:nth-child(even){background:#fafbfc}
+tbody tr:nth-child(even):hover{background:#f7f9fc}
+
+.rank-badge{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-weight:700;font-size:12px;color:#fff}
+.rank-1{background:linear-gradient(135deg,#FFD700,#FFA000)}
+.rank-2{background:linear-gradient(135deg,#C0C0C0,#9E9E9E)}
+.rank-3{background:linear-gradient(135deg,#CD7F32,#795548)}
+.rank-other{background:var(--primary-mid)}
+
+.status-pill{padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;display:inline-block}
+.status-pill.present{background:#e8f5e9;color:#1b5e20}
+.status-pill.absent{background:#fce4ec;color:#880e4f}
+.status-pill.not-reported{background:#fff3e0;color:#e65100}
+
+/* ── FORM ELEMENTS ── */
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:12px;font-weight:600;color:var(--muted);
+  text-transform:uppercase;letter-spacing:0.5px;margin-bottom:5px}
+.form-group input,.form-group select{width:100%;padding:10px 12px;border:1.5px solid var(--border);
+  border-radius:9px;font-size:14px;font-family:'Noto Sans',sans-serif;transition:all .2s}
+.form-group input:focus,.form-group select:focus{outline:none;border-color:var(--primary-mid);
+  box-shadow:0 0 0 3px rgba(27,79,155,0.08)}
+
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;border-radius:10px;
+  font-size:13.5px;font-weight:600;cursor:pointer;border:none;transition:all .2s;
+  font-family:'Noto Sans',sans-serif}
+.btn-primary{background:linear-gradient(135deg,var(--primary-mid),var(--primary-light));color:#fff;
+  box-shadow:0 4px 12px rgba(27,79,155,0.3)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(27,79,155,0.4)}
+.btn-success{background:linear-gradient(135deg,var(--success),#2ecc71);color:#fff}
+.btn-danger{background:linear-gradient(135deg,var(--danger),#c0392b);color:#fff}
+.btn-warning{background:linear-gradient(135deg,var(--warning),#e67e22);color:#fff}
+.btn-outline{background:transparent;border:2px solid var(--primary-mid);color:var(--primary-mid)}
+.btn-outline:hover{background:var(--primary-mid);color:#fff}
+.btn-sm{padding:7px 14px;font-size:12.5px;border-radius:8px}
+.btn-icon{padding:8px;border-radius:8px}
+
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+
+/* ── TABS ── */
+.tab-bar{display:flex;gap:4px;background:var(--bg);padding:4px;border-radius:12px;
+  margin-bottom:20px;flex-wrap:wrap}
+.tab-btn{padding:8px 18px;border-radius:9px;border:none;background:transparent;
+  font-family:'Noto Sans',sans-serif;font-size:13.5px;font-weight:500;cursor:pointer;
+  transition:all .2s;color:var(--muted)}
+.tab-btn.active{background:var(--card);color:var(--primary);font-weight:700;
+  box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+
+/* ── SECTIONS (pages) ── */
+.section-page{display:none}
+.section-page.active{display:block}
+
+/* ── DATE PICKER ── */
+.date-picker-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.date-picker-row input[type=date]{padding:9px 12px;border:1.5px solid var(--border);
+  border-radius:9px;font-size:13.5px;font-family:'Noto Sans',sans-serif}
+.date-picker-row input[type=date]:focus{outline:none;border-color:var(--primary-mid)}
+
+/* ── EFFICIENCY CARDS ── */
+.eff-card{background:var(--card);border-radius:14px;padding:18px;box-shadow:var(--shadow);
+  margin-bottom:16px}
+.eff-user-header{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.eff-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--primary-mid),var(--primary-light));
+  color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Rajdhani',sans-serif;
+  font-size:17px;font-weight:700;flex-shrink:0}
+.eff-user-info h4{font-size:15px;font-weight:700;color:var(--text)}
+.eff-user-info p{font-size:12px;color:var(--muted)}
+.eff-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.eff-bar-label{font-size:12px;color:var(--muted);width:140px;flex-shrink:0}
+.eff-bar-track{flex:1;height:8px;background:var(--bg);border-radius:4px;overflow:hidden}
+.eff-bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--primary-mid),var(--accent));
+  transition:width .4s ease}
+.eff-score-badge{font-weight:700;font-size:13px;color:var(--primary-mid);min-width:36px;text-align:right}
+.suggestion-box{background:#e3f2fd;border-left:4px solid var(--primary-mid);
+  border-radius:0 8px 8px 0;padding:10px 14px;font-size:12.5px;color:#1565c0;
+  margin-top:10px;line-height:1.6}
+
+/* ── GRID ── */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:600px){.grid-2{grid-template-columns:1fr}}
+
+/* ── HOLIDAY LIST ── */
+.holiday-chip{display:inline-flex;align-items:center;gap:6px;background:#fff3e0;
+  border:1px solid #ffe082;color:#e65100;padding:5px 12px;border-radius:20px;
+  font-size:12.5px;margin:4px;font-weight:500}
+.holiday-chip button{background:none;border:none;cursor:pointer;color:#c62828;font-size:14px;
+  line-height:1;padding:0}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+.fade-in{animation:fadeUp .4s ease}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:24px;right:24px;background:#1a2332;color:#fff;padding:12px 22px;
+  border-radius:12px;font-size:14px;z-index:2000;transition:all .3s ease;transform:translateX(120%);
+  box-shadow:0 8px 30px rgba(0,0,0,0.3)}
+#toast.show{transform:translateX(0)}
+
+/* ── SPINNER ── */
+.spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--primary-mid);
+  border-radius:50%;animation:spin .8s linear infinite;margin:20px auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── LOADING OVERLAY ── */
+.loading-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(255,255,255,0.85);
+  z-index:900;display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px}
+.loading-overlay.active{display:flex}
+.loading-overlay p{color:var(--primary);font-weight:600}
+
+/* Mobile sidebar toggle */
+.hamburger{display:none;background:none;border:none;font-size:24px;cursor:pointer;padding:4px}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);transition:transform .3s ease}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .hamburger{display:block}
+  .content{padding:16px}
+  .topbar{padding:14px 16px}
+}
+
+/* Upload zone */
+.upload-zone{border:2px dashed var(--border);border-radius:12px;padding:24px;text-align:center;
+  cursor:pointer;transition:all .2s;background:#fafbfc}
+.upload-zone:hover{border-color:var(--primary-mid);background:#e8eef8}
+.upload-zone input{display:none}
+.upload-zone p{color:var(--muted);font-size:13.5px;margin-top:8px}
+
+.progress-bar{height:6px;background:var(--bg);border-radius:3px;margin-top:8px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary-mid),var(--accent));
+  border-radius:3px;transition:width .3s}
+
+/* PNG export canvas */
+#exportCanvas{display:none}
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <p id="loadingText">Loading…</p>
+</div>
+<div id="toast"></div>
+<canvas id="exportCanvas"></canvas>
+
+<!-- ════════ SIDEBAR ════════ -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">SS</div>
+    <h2>Seva Sarathi</h2>
+    <p>Admin Portal <span class="sidebar-badge">ADMIN</span></p>
+  </div>
+  <div class="nav-items">
+    <div class="nav-item active" onclick="goSection('dash')">
+      <span class="ni-icon">🏠</span> Dashboard
+    </div>
+    <div class="nav-item" onclick="goSection('attendance')">
+      <span class="ni-icon">✅</span> Attendance
+    </div>
+    <div class="nav-item" onclick="goSection('reports')">
+      <span class="ni-icon">📊</span> Service Reports
+    </div>
+    <div class="nav-item" onclick="goSection('master')">
+      <span class="ni-icon">👥</span> Master Data
+    </div>
+    <div class="nav-item" onclick="goSection('budget')">
+      <span class="ni-icon">🎯</span> Budget
+    </div>
+    <div class="nav-item" onclick="goSection('holidays')">
+      <span class="ni-icon">📅</span> Holidays
+    </div>
+    <div class="nav-item" onclick="goSection('efficiency')">
+      <span class="ni-icon">📈</span> Efficiency
+    </div>
+    <div class="nav-item" onclick="goSection('users')">
+      <span class="ni-icon">🔑</span> User Mgmt
+    </div>
+  </div>
+  <div class="sidebar-footer">Malappuram Region · SBI<br>Admin v1.0</div>
+</nav>
+
+<!-- ════════ MAIN ════════ -->
+<div class="main">
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:10px">
+      <button class="hamburger" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+      <h1 id="topbarTitle">Dashboard</h1>
+    </div>
+    <div class="topbar-right">
+      <div class="badge-live">Live</div>
+      <button class="btn btn-outline btn-sm" onclick="refreshAll()">🔄 Refresh</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ═══ DASHBOARD ═══ -->
+    <div class="section-page active fade-in" id="sec-dash">
+      <div class="stat-grid" id="dashStats">
+        <div class="stat-card sc-green">
+          <div class="stat-val" id="statPresent">—</div>
+          <div class="stat-label">Present Today</div>
+        </div>
+        <div class="stat-card sc-red">
+          <div class="stat-val" id="statAbsent">—</div>
+          <div class="stat-label">Absent Today</div>
+        </div>
+        <div class="stat-card sc-orange">
+          <div class="stat-val" id="statNotReported">—</div>
+          <div class="stat-label">Not Reported</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="statSubmitted">—</div>
+          <div class="stat-label">Reports Submitted</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><div class="ct-left"><span class="ct-icon">📊</span> Today's Overview</div>
+          <button class="btn btn-outline btn-sm" onclick="loadDashboard()">🔄</button>
+        </div>
+        <div id="dashOverviewTable"></div>
+      </div>
+    </div>
+
+    <!-- ═══ ATTENDANCE ═══ -->
+    <div class="section-page fade-in" id="sec-attendance">
+      <div class="card">
+        <div class="card-title">
+          <div class="ct-left"><span class="ct-icon">✅</span> Attendance Report</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-success btn-sm" onclick="downloadAttPng()">📸 PNG</button>
+            <button class="btn btn-primary btn-sm" onclick="loadAttendance()">🔄</button>
+          </div>
+        </div>
+        <div class="date-picker-row">
+          <input type="date" id="attDate" value="" onchange="loadAttendance()">
+          <span style="font-size:13px;color:var(--muted)">Select date to view</span>
+        </div>
+        <div id="attTableWrap"></div>
+      </div>
+    </div>
+
+    <!-- ═══ REPORTS ═══ -->
+    <div class="section-page fade-in" id="sec-reports">
+      <div class="card">
+        <div class="card-title">
+          <div class="ct-left"><span class="ct-icon">📊</span> Service Reports</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-success btn-sm" onclick="downloadReportExcel()">📥 Excel</button>
+            <button class="btn btn-warning btn-sm" onclick="downloadReportPng()">📸 PNG</button>
+            <button class="btn btn-primary btn-sm" onclick="loadReports()">🔄</button>
+          </div>
+        </div>
+        <div class="tab-bar">
+          <button class="tab-btn active" onclick="switchReportTab('daily',this)">Daily</button>
+          <button class="tab-btn" onclick="switchReportTab('monthly',this)">Monthly</button>
+        </div>
+        <div class="date-picker-row" id="reportDateRow">
+          <input type="date" id="repDate" value="" onchange="loadReports()">
+        </div>
+        <div class="date-picker-row" id="reportMonthRow" style="display:none">
+          <input type="month" id="repMonth" onchange="loadReports()">
+        </div>
+        <div id="reportTableWrap"></div>
+      </div>
+    </div>
+
+    <!-- ═══ MASTER DATA ═══ -->
+    <div class="section-page fade-in" id="sec-master">
+      <div class="card">
+        <div class="card-title"><div class="ct-left"><span class="ct-icon">👥</span> Branch Master Data</div></div>
+        <div class="btn-row">
+          <button class="btn btn-primary btn-sm" onclick="showAddBranchForm()">➕ Add Branch</button>
+          <button class="btn btn-outline btn-sm" onclick="loadMasterData()">🔄 Refresh</button>
+        </div>
+        <div id="addBranchForm" style="display:none;margin-bottom:16px">
+          <div class="card" style="background:#f7f9fc;box-shadow:none;padding:16px;border:1px solid var(--border)">
+            <div class="grid-2">
+              <div class="form-group">
+                <label>Branch Name</label>
+                <input type="text" id="newBranch" placeholder="Branch name">
+              </div>
+              <div class="form-group">
+                <label>Seva Sarathi Name</label>
+                <input type="text" id="newSSName" placeholder="Employee name">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Employee Code</label>
+              <input type="text" id="newEmpCode" placeholder="Employee code">
+            </div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-success btn-sm" onclick="addBranch()">Save</button>
+              <button class="btn btn-outline btn-sm" onclick="document.getElementById('addBranchForm').style.display='none'">Cancel</button>
+            </div>
+          </div>
+        </div>
+        <div id="masterTableWrap"></div>
+      </div>
+    </div>
+
+    <!-- ═══ BUDGET ═══ -->
+    <div class="section-page fade-in" id="sec-budget">
+      <div class="card">
+        <div class="card-title"><div class="ct-left"><span class="ct-icon">🎯</span> Monthly Budget</div></div>
+        <div class="btn-row">
+          <button class="btn btn-outline btn-sm" onclick="downloadBudgetTemplate()">⬇ Download Template</button>
+          <label class="btn btn-primary btn-sm" style="cursor:pointer">
+            📂 Upload CSV
+            <input type="file" accept=".csv" style="display:none" onchange="uploadBudgetCSV(this)">
+          </label>
+          <button class="btn btn-warning btn-sm" onclick="loadBudgetAdmin()">🔄 Refresh</button>
+        </div>
+        <div class="form-group">
+          <label>Month</label>
+          <input type="month" id="budgetMonth" style="width:auto" onchange="loadBudgetAdmin()">
+        </div>
+        <div id="budgetTableWrap">
+          <p style="color:var(--muted);font-size:13px;text-align:center;padding:20px">
+            Select a month to view/edit budget
+          </p>
+        </div>
+        <div id="budgetFormWrap" style="display:none">
+          <button class="btn btn-success btn-sm" onclick="saveBudget()" style="margin-top:14px">💾 Save Budget</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ HOLIDAYS ═══ -->
+    <div class="section-page fade-in" id="sec-holidays">
+      <div class="card">
+        <div class="card-title"><div class="ct-left"><span class="ct-icon">📅</span> Holiday Management</div></div>
+        <div class="grid-2" style="margin-bottom:16px">
+          <div>
+            <div class="form-group">
+              <label>Add Holiday Date</label>
+              <input type="date" id="newHolidayDate">
+            </div>
+            <div class="form-group">
+              <label>Description</label>
+              <input type="text" id="newHolidayDesc" placeholder="e.g., Onam Holiday">
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="addHoliday()">➕ Add Holiday</button>
+          </div>
+          <div>
+            <div class="card" style="background:#fff3e0;box-shadow:none;border:1px solid #ffe082;padding:14px">
+              <p style="font-size:13px;color:#e65100;font-weight:600;margin-bottom:8px">📌 Auto Rules</p>
+              <p style="font-size:12px;color:#bf360c;line-height:1.7">
+                • 2nd &amp; 4th Saturdays are auto-holidays<br>
+                • Sundays are non-working days<br>
+                • Daily ask rate adjusts for remaining working days
+              </p>
+            </div>
+          </div>
+        </div>
+        <p style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px">Custom Holidays:</p>
+        <div id="holidayList"></div>
+        <div style="margin-top:16px">
+          <p style="font-size:12px;color:var(--muted)">
+            Working days this month: <strong id="workingDaysCount">—</strong> |
+            Remaining: <strong id="remainingDaysCount">—</strong>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ EFFICIENCY ═══ -->
+    <div class="section-page fade-in" id="sec-efficiency">
+      <div class="card">
+        <div class="card-title">
+          <div class="ct-left"><span class="ct-icon">📈</span> User Efficiency Dashboard</div>
+          <button class="btn btn-primary btn-sm" onclick="loadEfficiency()">🔄</button>
+        </div>
+        <div class="form-group" style="max-width:200px">
+          <label>Month</label>
+          <input type="month" id="effMonth" onchange="loadEfficiency()">
+        </div>
+        <div id="efficiencyWrap"></div>
+      </div>
+    </div>
+
+    <!-- ═══ USER MANAGEMENT ═══ -->
+    <div class="section-page fade-in" id="sec-users">
+      <div class="card">
+        <div class="card-title"><div class="ct-left"><span class="ct-icon">🔑</span> User Management</div>
+          <button class="btn btn-outline btn-sm" onclick="loadUsers()">🔄</button>
+        </div>
+        <div id="usersTableWrap"></div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- RESET PASSWORD MODAL -->
+<div id="resetPwdModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;
+  background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center;padding:20px">
+  <div style="background:#fff;border-radius:16px;padding:24px;max-width:380px;width:100%;
+    box-shadow:0 20px 60px rgba(0,0,0,0.25)">
+    <h3 style="font-family:'Rajdhani',sans-serif;font-size:18px;color:var(--primary);margin-bottom:12px">
+      Reset Password
+    </h3>
+    <p id="resetPwdUser" style="font-size:13px;color:var(--muted);margin-bottom:14px"></p>
+    <div class="form-group">
+      <label>New Password</label>
+      <input type="text" id="resetPwdInput" value="Sbi@1234" placeholder="New password">
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-primary btn-sm" onclick="confirmResetPwd()">Reset</button>
+      <button class="btn btn-outline btn-sm" onclick="document.getElementById('resetPwdModal').style.display='none'">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz3CIog5VnbWdDKLDK4MvZZU8I8gfEilNGqxnNdDEB-mDP7kUSee7stC6_0Id37rcVNyw/exec';
+
+const PARAMS = [
+  {id:'p1',name:'YONO Registration',channel:'yono',wt:2},
+  {id:'p2',name:'WhatsApp Banking Reg',channel:'wb',wt:2},
+  {id:'p3',name:'CBDC Registration',channel:'other',wt:2},
+  {id:'p4',name:'YONO Cash (Withdrawal & Deposit)',channel:'yono',wt:1},
+  {id:'p5',name:'CDM/GCC Deposit',channel:'other',wt:1},
+  {id:'p6',name:'Feedbacks',channel:'other',wt:1},
+  {id:'p7',name:'APY Done',channel:'other',wt:1},
+  {id:'p8',name:'Term Deposit (YONO)',channel:'yono',wt:1},
+  {id:'p9',name:'PAI Done (YONO)',channel:'yono',wt:1},
+  {id:'p10',name:'ATM Card Issue (YONO/Toll Free)',channel:'tf',wt:1},
+  {id:'p11',name:'Cheque Book Issue',channel:'yono',wt:1},
+  {id:'p12',name:'Form 15G/H',channel:'yono',wt:1},
+  {id:'p13',name:'KYC Update',channel:'yono',wt:1},
+  {id:'p14',name:'Nominee Update (YONO)',channel:'yono',wt:1},
+  {id:'p15',name:'Transfer Done (YONO)',channel:'yono',wt:1},
+  {id:'p16',name:'Statement & Enquiry',channel:'tf',wt:1}
+];
+
+let currentSection='dash';
+let resetPwdEmpCode='';
+let reportMode='daily';
+
+function showLoading(msg='Loading…'){
+  document.getElementById('loadingText').textContent=msg;
+  document.getElementById('loadingOverlay').classList.add('active');
+}
+function hideLoading(){document.getElementById('loadingOverlay').classList.remove('active')}
+
+function showToast(msg,dur=3000){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),dur);
+}
+
+async function apiCall(action,data={}){
+  const payload={action,...data};
+  try{
+    const r=await fetch(SCRIPT_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    });
+    return await r.json();
+  }catch(e){return{success:false,error:e.message}}
+}
+
+function goSection(id){
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  document.querySelectorAll('.section-page').forEach(s=>s.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  currentSection=id;
+  const titles={dash:'Dashboard',attendance:'Attendance Report',reports:'Service Reports',
+    master:'Master Data',budget:'Budget Management',holidays:'Holiday Management',
+    efficiency:'User Efficiency',users:'User Management'};
+  document.getElementById('topbarTitle').textContent=titles[id]||id;
+  // Load section data
+  if(id==='dash')loadDashboard();
+  else if(id==='attendance')loadAttendance();
+  else if(id==='reports')loadReports();
+  else if(id==='master')loadMasterData();
+  else if(id==='budget'){const m=new Date();document.getElementById('budgetMonth').value=m.toISOString().substring(0,7);loadBudgetAdmin();}
+  else if(id==='holidays')loadHolidays();
+  else if(id==='efficiency'){const m=new Date();document.getElementById('effMonth').value=m.toISOString().substring(0,7);loadEfficiency();}
+  else if(id==='users')loadUsers();
+}
+
+function refreshAll(){if(currentSection==='dash')loadDashboard();else goSection(currentSection)}
+
+// ══ INIT ══
+(function init(){
+  const today=new Date().toISOString().split('T')[0];
+  document.getElementById('attDate').value=today;
+  document.getElementById('repDate').value=today;
+  const m=new Date().toISOString().substring(0,7);
+  document.getElementById('budgetMonth').value=m;
+  document.getElementById('effMonth').value=m;
+  loadDashboard();
+  // Auto refresh every 2 min
+  setInterval(()=>{if(currentSection==='dash')loadDashboard()},120000);
+})();
+
+// ══ DASHBOARD ══
+async function loadDashboard(){
+  showLoading('Loading dashboard…');
+  const today=new Date().toISOString().split('T')[0];
+  const [attRes,repRes]=await Promise.all([
+    apiCall('admin_getAttendance',{date:today}),
+    apiCall('admin_getReports',{date:today,mode:'daily'})
+  ]);
+  hideLoading();
+  const attData=attRes.data||[];
+  const repData=repRes.data||[];
+  const present=attData.filter(r=>r.status==='Present').length;
+  const absent=attData.filter(r=>r.status==='Absent').length;
+  const notReported=22-attData.length;
+  document.getElementById('statPresent').textContent=present;
+  document.getElementById('statAbsent').textContent=absent;
+  document.getElementById('statNotReported').textContent=Math.max(0,notReported);
+  document.getElementById('statSubmitted').textContent=repData.length;
+  // Build overview table
+  renderDashTable(attData,repData);
+}
+
+function renderDashTable(attData,repData){
+  const reportMap={};
+  repData.forEach(r=>reportMap[r.empCode]=r);
+  const rows=attData.map(a=>{
+    const r=reportMap[a.empCode]||null;
+    return `<tr>
+      <td>${a.name}</td>
+      <td>${a.branch}</td>
+      <td><span class="status-pill ${a.status.toLowerCase()}">${a.status}</span></td>
+      <td>${r?'<span class="status-pill present">Submitted ('+r.score+')</span>':'<span class="status-pill not-reported">Pending</span>'}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('dashOverviewTable').innerHTML=`
+    <div class="table-wrap"><table>
+      <thead><tr><th>Name</th><th>Branch</th><th>Attendance</th><th>Report</th></tr></thead>
+      <tbody>${rows||'<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px">No data yet</td></tr>'}</tbody>
+    </table></div>`;
+}
+
+// ══ ATTENDANCE ══
+async function loadAttendance(){
+  const date=document.getElementById('attDate').value;
+  if(!date)return;
+  showLoading('Loading attendance…');
+  const res=await apiCall('admin_getAttendance',{date});
+  hideLoading();
+  const data=(res.data||[]).sort((a,b)=>{
+    const order={Present:0,Absent:1};
+    return (order[a.status]||2)-(order[b.status]||2);
+  });
+  // Add not-reported entries
+  // (in a real implementation, compare against master list)
+  const rows=data.map(r=>`<tr>
+    <td>${r.name}</td>
+    <td>${r.branch}</td>
+    <td><span class="status-pill ${r.status.toLowerCase()}">${r.status}</span></td>
+    <td style="font-size:12px;color:var(--muted)">${r.timestamp||'—'}</td>
+  </tr>`).join('');
+  document.getElementById('attTableWrap').innerHTML=
+    data.length?`<div class="table-wrap" id="attTable"><table>
+      <thead><tr><th>Name</th><th>Branch</th><th>Status</th><th>Time</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table></div>`:'<p style="text-align:center;color:var(--muted);padding:20px">No attendance data for this date</p>';
+}
+
+async function downloadAttPng(){
+  const date=document.getElementById('attDate').value;
+  const res=await apiCall('admin_getAttendance',{date});
+  const data=res.data||[];
+  generatePng('Attendance Report – '+date, data,
+    ['Name','Branch','Status'],['name','branch','status']);
+}
+
+// ══ REPORTS ══
+function switchReportTab(mode,btn){
+  reportMode=mode;
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('reportDateRow').style.display=mode==='daily'?'flex':'none';
+  document.getElementById('reportMonthRow').style.display=mode==='monthly'?'flex':'none';
+  loadReports();
+}
+
+async function loadReports(){
+  const mode=reportMode;
+  const date=mode==='daily'?document.getElementById('repDate').value:null;
+  const month=mode==='monthly'?document.getElementById('repMonth').value:null;
+  if(!date&&!month)return;
+  showLoading('Loading reports…');
+  const res=await apiCall('admin_getReports',{date,month,mode});
+  hideLoading();
+  const data=(res.data||[]).sort((a,b)=>b.score-a.score);
+  const rows=data.map((r,i)=>{
+    const rankClass=i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-other';
+    const paramCols=PARAMS.map(p=>`<td>${r.values?.[p.id]||0}</td>`).join('');
+    return `<tr>
+      <td><div class="rank-badge ${rankClass}">${i+1}</div></td>
+      <td>${r.name}</td><td>${r.branch}</td>
+      <td style="font-weight:700;color:var(--primary)">${r.score}</td>
+      ${paramCols}
+    </tr>`;
+  }).join('');
+  const headerCols=PARAMS.map(p=>`<th style="font-size:11px">${p.id.toUpperCase()}</th>`).join('');
+  document.getElementById('reportTableWrap').innerHTML=data.length?
+    `<div class="table-wrap" id="repTable" style="overflow-x:auto"><table>
+      <thead><tr><th>#</th><th>Name</th><th>Branch</th><th>Score</th>${headerCols}</tr></thead>
+      <tbody>${rows}</tbody>
+    </table></div>`:'<p style="text-align:center;color:var(--muted);padding:20px">No reports found</p>';
+}
+
+async function downloadReportExcel(){
+  const mode=reportMode;
+  const date=mode==='daily'?document.getElementById('repDate').value:null;
+  const month=mode==='monthly'?document.getElementById('repMonth').value:null;
+  const res=await apiCall('admin_getReports',{date,month,mode});
+  const data=(res.data||[]).sort((a,b)=>b.score-a.score);
+  if(!data.length){showToast('No data to export');return}
+  const headers=['Rank','Name','Branch','Score',...PARAMS.map(p=>p.name)];
+  const csvRows=[headers.join(',')];
+  data.forEach((r,i)=>{
+    const vals=[i+1,`"${r.name}"`,`"${r.branch}"`,r.score,...PARAMS.map(p=>r.values?.[p.id]||0)];
+    csvRows.push(vals.join(','));
+  });
+  const blob=new Blob([csvRows.join('\n')],{type:'text/csv'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=`SevaReport_${date||month}.csv`;a.click();
+}
+
+async function downloadReportPng(){
+  const mode=reportMode;
+  const date=mode==='daily'?document.getElementById('repDate').value:null;
+  const month=mode==='monthly'?document.getElementById('repMonth').value:null;
+  const res=await apiCall('admin_getReports',{date,month,mode});
+  const data=(res.data||[]).sort((a,b)=>b.score-a.score);
+  generatePng('Service Report – '+(date||month),data,
+    ['#','Name','Branch','Score'],['_rank','name','branch','score'],true);
+}
+
+// ══ MASTER DATA ══
+async function loadMasterData(){
+  showLoading('Loading master data…');
+  const res=await apiCall('admin_getMasterData');
+  hideLoading();
+  const data=res.data||[];
+  const rows=data.map((r,i)=>`<tr>
+    <td>${i+1}</td>
+    <td>${r.branch}</td>
+    <td>${r.name}</td>
+    <td>${r.empCode||'—'}</td>
+    <td>
+      <button class="btn btn-danger btn-sm btn-icon" onclick="removeBranch('${r.empCode}','${r.branch.replace(/'/g,"\\'")}')">🗑</button>
+    </td>
+  </tr>`).join('');
+  document.getElementById('masterTableWrap').innerHTML=`
+    <div class="table-wrap"><table>
+      <thead><tr><th>#</th><th>Branch</th><th>Seva Sarathi</th><th>Emp Code</th><th>Action</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table></div>`;
+}
+
+function showAddBranchForm(){
+  const f=document.getElementById('addBranchForm');
+  f.style.display=f.style.display==='none'?'block':'none';
+}
+
+async function addBranch(){
+  const branch=document.getElementById('newBranch').value.trim();
+  const name=document.getElementById('newSSName').value.trim();
+  const empCode=document.getElementById('newEmpCode').value.trim();
+  if(!branch||!name||!empCode){showToast('⚠️ Fill all fields');return}
+  showLoading('Adding…');
+  const res=await apiCall('admin_addBranch',{branch,name,empCode});
+  hideLoading();
+  if(res.success){showToast('✅ Added!');loadMasterData();document.getElementById('addBranchForm').style.display='none';}
+  else showToast('❌ '+res.error);
+}
+
+async function removeBranch(empCode,branch){
+  if(!confirm(`Remove ${branch}?`))return;
+  showLoading('Removing…');
+  const res=await apiCall('admin_removeBranch',{empCode});
+  hideLoading();
+  if(res.success){showToast('✅ Removed');loadMasterData();}
+  else showToast('❌ '+res.error);
+}
+
+// ══ BUDGET ══
+async function loadBudgetAdmin(){
+  const month=document.getElementById('budgetMonth').value;
+  if(!month)return;
+  showLoading('Loading budget…');
+  const [masterRes,budgetRes]=await Promise.all([
+    apiCall('admin_getMasterData'),
+    apiCall('admin_getBudgets',{month})
+  ]);
+  hideLoading();
+  const branches=(masterRes.data||[]).map(r=>r.branch);
+  const budgets=budgetRes.data||{};
+  // Build editable table
+  const paramHeaders=PARAMS.map(p=>`<th style="font-size:11px;min-width:70px">${p.name.substring(0,10)}…</th>`).join('');
+  const rows=branches.map(branch=>{
+    const bd=budgets[branch]||{};
+    const cells=PARAMS.map(p=>`<td><input type="number" min="0" value="${bd[p.id]||0}"
+      id="bud_${branch.replace(/\s/g,'_')}_${p.id}" style="width:65px;padding:4px 6px;
+      border:1px solid var(--border);border-radius:6px;font-size:12px;text-align:center"></td>`).join('');
+    return `<tr><td style="font-weight:600;font-size:13px">${branch}</td>${cells}</tr>`;
+  }).join('');
+  document.getElementById('budgetTableWrap').innerHTML=`
+    <div class="table-wrap" style="overflow-x:auto" id="budgetTable"><table>
+      <thead><tr><th>Branch</th>${paramHeaders}</tr></thead>
+      <tbody>${rows}</tbody>
+    </table></div>`;
+  document.getElementById('budgetFormWrap').style.display='block';
+  loadWorkingDays(month);
+}
+
+async function saveBudget(){
+  const month=document.getElementById('budgetMonth').value;
+  const masterRes=await apiCall('admin_getMasterData');
+  const branches=(masterRes.data||[]).map(r=>r.branch);
+  const budgetData={};
+  branches.forEach(branch=>{
+    const key=branch.replace(/\s/g,'_');
+    budgetData[branch]={};
+    PARAMS.forEach(p=>{
+      const inp=document.getElementById(`bud_${key}_${p.id}`);
+      budgetData[branch][p.id]=parseInt(inp?.value)||0;
+    });
+  });
+  showLoading('Saving budget…');
+  const res=await apiCall('admin_saveBudgets',{month,data:budgetData});
+  hideLoading();
+  if(res.success)showToast('✅ Budget saved!');else showToast('❌ '+res.error);
+}
+
+function downloadBudgetTemplate(){
+  const headers=['Branch',...PARAMS.map(p=>p.name)];
+  const csv=[headers.join(',')];
+  document.getElementById('masterTableWrap').querySelectorAll&&
+  ['MALAPPURAM','KOTTAKKAL','PUTHANATHANI'].forEach(b=>csv.push([`"${b}"`,...PARAMS.map(()=>0)].join(',')));
+  const blob=new Blob([csv.join('\n')],{type:'text/csv'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='BudgetTemplate.csv';a.click();
+}
+
+async function uploadBudgetCSV(input){
+  const file=input.files[0];if(!file)return;
+  const text=await file.text();
+  const lines=text.split('\n').filter(l=>l.trim());
+  const headers=lines[0].split(',').map(h=>h.trim().replace(/"/g,''));
+  const month=document.getElementById('budgetMonth').value;
+  if(!month){showToast('⚠️ Select month first');return}
+  const budgetData={};
+  for(let i=1;i<lines.length;i++){
+    const cols=lines[i].split(',').map(c=>c.trim().replace(/"/g,''));
+    const branch=cols[0];
+    if(!branch)continue;
+    budgetData[branch]={};
+    PARAMS.forEach((p,pi)=>{budgetData[branch][p.id]=parseInt(cols[pi+1])||0});
+  }
+  showLoading('Uploading…');
+  const res=await apiCall('admin_saveBudgets',{month,data:budgetData});
+  hideLoading();
+  if(res.success){showToast('✅ Budget uploaded!');loadBudgetAdmin();}
+  else showToast('❌ '+res.error);
+  input.value='';
+}
+
+// ══ HOLIDAYS ══
+let holidayList=[];
+async function loadHolidays(){
+  const res=await apiCall('admin_getHolidays');
+  holidayList=res.data||[];
+  renderHolidays();
+  const month=new Date().toISOString().substring(0,7);
+  loadWorkingDays(month);
+}
+
+function renderHolidays(){
+  const wrap=document.getElementById('holidayList');
+  if(!holidayList.length){wrap.innerHTML='<p style="color:var(--muted);font-size:13px">No custom holidays added</p>';return}
+  wrap.innerHTML=holidayList.map((h,i)=>`
+    <span class="holiday-chip">📅 ${h.date} – ${h.desc}
+      <button onclick="removeHoliday(${i})">✕</button>
+    </span>`).join('');
+}
+
+async function addHoliday(){
+  const date=document.getElementById('newHolidayDate').value;
+  const desc=document.getElementById('newHolidayDesc').value.trim();
+  if(!date||!desc){showToast('⚠️ Enter date and description');return}
+  showLoading('Adding…');
+  const res=await apiCall('admin_addHoliday',{date,desc});
+  hideLoading();
+  if(res.success){showToast('✅ Holiday added!');loadHolidays();}
+  else showToast('❌ '+res.error);
+}
+
+async function removeHoliday(idx){
+  const h=holidayList[idx];if(!h)return;
+  showLoading('Removing…');
+  const res=await apiCall('admin_removeHoliday',{date:h.date});
+  hideLoading();
+  if(res.success){showToast('✅ Removed');loadHolidays();}
+  else showToast('❌ '+res.error);
+}
+
+function loadWorkingDays(month){
+  const [y,m]=month.split('-').map(Number);
+  const daysInMonth=new Date(y,m,0).getDate();
+  const today=new Date();
+  let working=0,remaining=0;
+  for(let d=1;d<=daysInMonth;d++){
+    const date=new Date(y,m-1,d);
+    if(isWorkingDay(date,y,m)){
+      working++;
+      if(date>=today)remaining++;
+    }
+  }
+  document.getElementById('workingDaysCount').textContent=working;
+  document.getElementById('remainingDaysCount').textContent=remaining;
+}
+
+function isWorkingDay(date,year,month){
+  const day=date.getDay();
+  if(day===0)return false; // Sunday
+  if(day===6){
+    // 2nd and 4th Saturdays
+    const week=Math.ceil(date.getDate()/7);
+    if(week===2||week===4)return false;
+  }
+  // Check custom holidays
+  const ds=date.toISOString().split('T')[0];
+  if(holidayList.some(h=>h.date===ds))return false;
+  return true;
+}
+
+// ══ EFFICIENCY ══
+async function loadEfficiency(){
+  const month=document.getElementById('effMonth').value;
+  if(!month)return;
+  showLoading('Loading efficiency…');
+  const res=await apiCall('admin_getEfficiency',{month});
+  hideLoading();
+  const data=res.data||[];
+  if(!data.length){
+    document.getElementById('efficiencyWrap').innerHTML='<p style="text-align:center;color:var(--muted);padding:20px">No data for this month</p>';
+    return;
+  }
+  const maxScore=Math.max(...data.map(u=>u.totalScore||0))||1;
+  const html=data.sort((a,b)=>b.totalScore-a.totalScore).map(u=>{
+    const eff=Math.round((u.totalScore/maxScore)*100);
+    const suggestions=generateSuggestions(u);
+    const initials=u.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+    return `<div class="eff-card">
+      <div class="eff-user-header">
+        <div class="eff-avatar">${initials}</div>
+        <div class="eff-user-info">
+          <h4>${u.name}</h4>
+          <p>${u.branch} · Score: <strong>${u.totalScore}</strong> · ${u.reportDays||0} report days</p>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="downloadEffCard('${u.empCode}')">📸</button>
+      </div>
+      ${PARAMS.map(p=>{
+        const val=u.paramTotals?.[p.id]||0;
+        const pct=Math.min(100,val>0?100:0);
+        return `<div class="eff-bar-row">
+          <span class="eff-bar-label">${p.name.substring(0,22)}</span>
+          <div class="eff-bar-track"><div class="eff-bar-fill" style="width:${val>0?Math.min(100,val*5)+'%':'0'}"></div></div>
+          <span class="eff-score-badge">${val}</span>
+        </div>`;
+      }).join('')}
+      <div class="suggestion-box">💡 <strong>Suggestions:</strong> ${suggestions}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('efficiencyWrap').innerHTML=html;
+}
+
+function generateSuggestions(u){
+  const weak=PARAMS.filter(p=>(u.paramTotals?.[p.id]||0)===0).map(p=>p.name);
+  if(weak.length===0)return'Great performance! Keep up the momentum across all parameters.';
+  if(weak.length>8)return`Focus on YONO registrations and WhatsApp Banking first. These have highest weightage (wt:2). Currently missing: ${weak.slice(0,3).join(', ')} and ${weak.length-3} more.`;
+  return`Zero entries in: ${weak.join(', ')}. Push customers for digital adoption in these areas.`;
+}
+
+// ══ USERS ══
+async function loadUsers(){
+  showLoading('Loading users…');
+  const res=await apiCall('admin_getUsers');
+  hideLoading();
+  const data=res.data||[];
+  const rows=data.map(u=>`<tr>
+    <td>${u.empCode}</td>
+    <td>${u.name}</td>
+    <td>${u.branch}</td>
+    <td><span class="status-pill ${u.firstLogin?'not-reported':'present'}">${u.firstLogin?'Default':'Changed'}</span></td>
+    <td>
+      <button class="btn btn-warning btn-sm" onclick="openResetPwd('${u.empCode}','${u.name.replace(/'/g,"\\'")}')">🔑 Reset</button>
+    </td>
+  </tr>`).join('');
+  document.getElementById('usersTableWrap').innerHTML=`
+    <div class="table-wrap"><table>
+      <thead><tr><th>Emp Code</th><th>Name</th><th>Branch</th><th>Password Status</th><th>Action</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table></div>`;
+}
+
+function openResetPwd(empCode,name){
+  resetPwdEmpCode=empCode;
+  document.getElementById('resetPwdUser').textContent='Resetting password for: '+name;
+  document.getElementById('resetPwdInput').value='Sbi@1234';
+  document.getElementById('resetPwdModal').style.display='flex';
+}
+
+async function confirmResetPwd(){
+  const pwd=document.getElementById('resetPwdInput').value;
+  if(!pwd){showToast('⚠️ Enter password');return}
+  showLoading('Resetting…');
+  const res=await apiCall('admin_resetPassword',{empCode:resetPwdEmpCode,newPassword:pwd});
+  hideLoading();
+  if(res.success){
+    showToast('✅ Password reset!');
+    document.getElementById('resetPwdModal').style.display='none';
+  }else showToast('❌ '+res.error);
+}
+
+// ══ PNG GENERATOR ══
+function generatePng(title,data,cols,keys,addRank=false){
+  if(!data.length){showToast('No data to export');return}
+  const canvas=document.getElementById('exportCanvas');
+  const rowH=36,padding=20,headerH=80,footerH=30;
+  const colWidths=addRank?[40,180,180,80,...PARAMS.map(()=>45)]:[200,200,120];
+  const totalW=colWidths.reduce((a,b)=>a+b,0)+padding*2;
+  const totalH=headerH+(data.length+1)*rowH+footerH+padding*2;
+  canvas.width=totalW;canvas.height=totalH;
+  const ctx=canvas.getContext('2d');
+  // Background
+  ctx.fillStyle='#f0f3f8';ctx.fillRect(0,0,totalW,totalH);
+  // Header
+  const grad=ctx.createLinearGradient(0,0,totalW,0);
+  grad.addColorStop(0,'#0f2d5e');grad.addColorStop(1,'#1B4F9B');
+  ctx.fillStyle=grad;ctx.fillRect(0,0,totalW,headerH);
+  ctx.fillStyle='#F5A623';ctx.font='bold 22px Rajdhani, sans-serif';
+  ctx.fillText('SEVA SARATHI – MALAPPURAM',padding,32);
+  ctx.fillStyle='rgba(255,255,255,0.8)';ctx.font='14px Noto Sans, sans-serif';
+  ctx.fillText(title,padding,56);
+  ctx.fillStyle='rgba(255,255,255,0.5)';ctx.font='11px Noto Sans, sans-serif';
+  ctx.fillText('Generated: '+new Date().toLocaleString('en-IN'),padding,72);
+  // Table header
+  let y=headerH+padding;let x=padding;
+  ctx.fillStyle='#1B4F9B';ctx.fillRect(0,y,totalW,rowH);
+  ctx.fillStyle='#fff';ctx.font='bold 13px Noto Sans, sans-serif';
+  cols.forEach((col,i)=>{
+    ctx.fillText(col,x+6,y+23);
+    x+=colWidths[i]||80;
+  });
+  y+=rowH;
+  // Rows
+  data.forEach((row,ri)=>{
+    ctx.fillStyle=ri%2===0?'#fff':'#f7f9fc';ctx.fillRect(0,y,totalW,rowH);
+    x=padding;
+    keys.forEach((k,ki)=>{
+      ctx.fillStyle='#1a2332';ctx.font=(k==='score'||k==='_rank')?'bold 13px Noto Sans, sans-serif':'13px Noto Sans, sans-serif';
+      let val=k==='_rank'?ri+1:(row[k]||0);
+      if(k.startsWith('p'))val=row.values?.[k]||0;
+      ctx.fillText(String(val),x+6,y+23);
+      x+=colWidths[ki]||80;
+    });
+    y+=rowH;
+  });
+  // Footer
+  ctx.fillStyle='#6b7a90';ctx.font='11px Noto Sans, sans-serif';
+  ctx.fillText('State Bank of India · Seva Sarathi Program',padding,y+padding+16);
+  // Download
+  const a=document.createElement('a');
+  a.href=canvas.toDataURL('image/png');
+  a.download=`${title.replace(/\s/g,'_')}.png`;a.click();
+}
+
+async function downloadEffCard(empCode){
+  showToast('📸 Downloading efficiency card…');
+  // Simplified - in production, generate detailed card
+  generatePng('Efficiency Card',[],...[],[]);
+}
+</script>
+</body>
+</html>
