@@ -259,7 +259,7 @@ tbody tr:nth-child(even):hover{background:#f7f9fc}
       <span class="ni-icon">🔑</span> User Mgmt
     </div>
   </div>
-  <div class="sidebar-footer">Malappuram Region <br>Admin v1.0</div>
+  <div class="sidebar-footer">Malappuram Region · SBI<br>Admin v1.0</div>
 </nav>
 
 <!-- ════════ MAIN ════════ -->
@@ -270,8 +270,7 @@ tbody tr:nth-child(even):hover{background:#f7f9fc}
       <h1 id="topbarTitle">Dashboard</h1>
     </div>
     <div class="topbar-right">
-      <div class="badge-live" id="connBadge" style="cursor:pointer" onclick="testConnection()" title="Click to test connection">● Live</div>
-      <button class="btn btn-warning btn-sm" onclick="setupSheets()" title="Initialize Google Sheets on first use">⚙️ Setup Sheets</button>
+      <div class="badge-live">Live</div>
       <button class="btn btn-outline btn-sm" onclick="refreshAll()">🔄 Refresh</button>
     </div>
   </div>
@@ -487,7 +486,7 @@ tbody tr:nth-child(even):hover{background:#f7f9fc}
     <p id="resetPwdUser" style="font-size:13px;color:var(--muted);margin-bottom:14px"></p>
     <div class="form-group">
       <label>New Password</label>
-      <input type="text" id="resetPwdInput" value="Sbi@1234" placeholder="New password">
+      <input type="text" id="resetPwdInput" value="Seva@1234" placeholder="New password">
     </div>
     <div style="display:flex;gap:10px">
       <button class="btn btn-primary btn-sm" onclick="confirmResetPwd()">Reset</button>
@@ -497,7 +496,7 @@ tbody tr:nth-child(even):hover{background:#f7f9fc}
 </div>
 
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbywT5rCTUhBT8xdT3Q16DK31TxRDYgfxdLVo4knUMRulIm_GZjncmGYwZ3tB7OD92Qr/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz3CIog5VnbWdDKLDK4MvZZU8I8gfEilNGqxnNdDEB-mDP7kUSee7stC6_0Id37rcVNyw/exec';
 
 const PARAMS = [
   {id:'p1',name:'YONO Registration',channel:'yono',wt:2},
@@ -535,23 +534,15 @@ function showToast(msg,dur=3000){
 }
 
 async function apiCall(action,data={}){
-  if(SCRIPT_URL.includes('YOUR_SCRIPT_ID')){
-    return{success:false,error:'Script URL not configured. Replace YOUR_SCRIPT_ID_HERE in this file.'};
-  }
+  const payload={action,...data};
   try{
-    const params=new URLSearchParams({action, payload:JSON.stringify(data)});
-    const url=`${SCRIPT_URL}?${params.toString()}&_t=${Date.now()}`;
-    const res=await fetch(url,{redirect:'follow'});
-    if(!res.ok) throw new Error(`HTTP ${res.status}`);
-    const text=await res.text();
-    if(!text||!text.trim()) throw new Error('Empty response from server');
-    const start=text.indexOf('{')!==-1?text.indexOf('{'):text.indexOf('[');
-    if(start===-1) throw new Error('No JSON in response: '+text.substring(0,120));
-    return JSON.parse(text.substring(start));
-  }catch(e){
-    console.error('apiCall['+action+']',e.message);
-    return{success:false,error:e.message};
-  }
+    const r=await fetch(SCRIPT_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    });
+    return await r.json();
+  }catch(e){return{success:false,error:e.message}}
 }
 
 function goSection(id){
@@ -585,8 +576,8 @@ function refreshAll(){if(currentSection==='dash')loadDashboard();else goSection(
   const m=new Date().toISOString().substring(0,7);
   document.getElementById('budgetMonth').value=m;
   document.getElementById('effMonth').value=m;
-  testConnection(); // Test API on load
   loadDashboard();
+  // Auto refresh every 2 min
   setInterval(()=>{if(currentSection==='dash')loadDashboard()},120000);
 })();
 
@@ -636,32 +627,66 @@ async function loadAttendance(){
   const date=document.getElementById('attDate').value;
   if(!date)return;
   showLoading('Loading attendance…');
-  const res=await apiCall('admin_getAttendance',{date});
+  // Fetch attendance AND master list in parallel
+  const [attRes,masterRes]=await Promise.all([
+    apiCall('admin_getAttendance',{date}),
+    apiCall('admin_getMasterData')
+  ]);
   hideLoading();
-  const data=(res.data||[]).sort((a,b)=>{
-    const order={Present:0,Absent:1};
-    return (order[a.status]||2)-(order[b.status]||2);
+  const marked=attRes.data||[];
+  const master=masterRes.data||[];
+  // Find who hasn't marked attendance at all
+  const markedCodes=new Set(marked.map(r=>String(r.empCode).toUpperCase()));
+  const notReported=master
+    .filter(m=>!markedCodes.has(String(m.empCode).toUpperCase()))
+    .map(m=>({name:m.name,branch:m.branch,empCode:m.empCode,status:'Not Reported',timestamp:'—'}));
+  // Merge and sort: Present → Absent → Not Reported
+  const ORDER={Present:0,Absent:1,'Not Reported':2};
+  const allData=[...marked,...notReported].sort((a,b)=>{
+    const diff=(ORDER[a.status]??2)-(ORDER[b.status]??2);
+    if(diff!==0)return diff;
+    return a.name.localeCompare(b.name); // alphabetical within each group
   });
-  // Add not-reported entries
-  // (in a real implementation, compare against master list)
-  const rows=data.map(r=>`<tr>
+  const statusColor={Present:'present',Absent:'absent','Not Reported':'not-reported'};
+  const rows=allData.map(r=>`<tr>
     <td>${r.name}</td>
     <td>${r.branch}</td>
-    <td><span class="status-pill ${r.status.toLowerCase()}">${r.status}</span></td>
+    <td><span class="status-pill ${statusColor[r.status]||'not-reported'}">${r.status}</span></td>
     <td style="font-size:12px;color:var(--muted)">${r.timestamp||'—'}</td>
   </tr>`).join('');
+  // Summary counts
+  const presentCount=allData.filter(r=>r.status==='Present').length;
+  const absentCount=allData.filter(r=>r.status==='Absent').length;
+  const notRepCount=allData.filter(r=>r.status==='Not Reported').length;
+  const summary=`<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px">
+    <span class="status-pill present">✅ Present: ${presentCount}</span>
+    <span class="status-pill absent">❌ Absent: ${absentCount}</span>
+    <span class="status-pill not-reported">⏳ Not Reported: ${notRepCount}</span>
+  </div>`;
   document.getElementById('attTableWrap').innerHTML=
-    data.length?`<div class="table-wrap" id="attTable"><table>
-      <thead><tr><th>Name</th><th>Branch</th><th>Status</th><th>Time</th></tr></thead>
-      <tbody>${rows}</tbody>
-    </table></div>`:'<p style="text-align:center;color:var(--muted);padding:20px">No attendance data for this date</p>';
+    allData.length
+      ? summary+`<div class="table-wrap" id="attTable"><table>
+          <thead><tr><th>Name</th><th>Branch</th><th>Status</th><th>Time</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table></div>`
+      : '<p style="text-align:center;color:var(--muted);padding:20px">No data for this date</p>';
 }
 
 async function downloadAttPng(){
   const date=document.getElementById('attDate').value;
-  const res=await apiCall('admin_getAttendance',{date});
-  const data=res.data||[];
-  generatePng('Attendance Report – '+date, data,
+  const [attRes,masterRes]=await Promise.all([
+    apiCall('admin_getAttendance',{date}),
+    apiCall('admin_getMasterData')
+  ]);
+  const marked=attRes.data||[];
+  const master=masterRes.data||[];
+  const markedCodes=new Set(marked.map(r=>String(r.empCode).toUpperCase()));
+  const notReported=master
+    .filter(m=>!markedCodes.has(String(m.empCode).toUpperCase()))
+    .map(m=>({name:m.name,branch:m.branch,status:'Not Reported'}));
+  const ORDER={Present:0,Absent:1,'Not Reported':2};
+  const allData=[...marked,...notReported].sort((a,b)=>(ORDER[a.status]??2)-(ORDER[b.status]??2));
+  generatePng('Attendance Report – '+date, allData,
     ['Name','Branch','Status'],['name','branch','status']);
 }
 
@@ -683,21 +708,22 @@ async function loadReports(){
   showLoading('Loading reports…');
   const res=await apiCall('admin_getReports',{date,month,mode});
   hideLoading();
-  const data=(res.data||[]).sort((a,b)=>b.score-a.score);
+  // Sort highest YS score first, lowest last
+  const data=(res.data||[]).sort((a,b)=>Number(b.score)-Number(a.score)||(a.name||'').localeCompare(b.name||''));
   const rows=data.map((r,i)=>{
     const rankClass=i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-other';
     const paramCols=PARAMS.map(p=>`<td>${r.values?.[p.id]||0}</td>`).join('');
     return `<tr>
       <td><div class="rank-badge ${rankClass}">${i+1}</div></td>
       <td>${r.name}</td><td>${r.branch}</td>
-      <td style="font-weight:700;color:var(--primary)">${r.score}</td>
+      <td style="font-weight:700;color:var(--primary-mid)">${r.score}</td>
       ${paramCols}
     </tr>`;
   }).join('');
   const headerCols=PARAMS.map(p=>`<th style="font-size:11px">${p.id.toUpperCase()}</th>`).join('');
   document.getElementById('reportTableWrap').innerHTML=data.length?
     `<div class="table-wrap" id="repTable" style="overflow-x:auto"><table>
-      <thead><tr><th>#</th><th>Name</th><th>Branch</th><th>Score</th>${headerCols}</tr></thead>
+      <thead><tr><th>Rank</th><th>Name</th><th>Branch</th><th>YS Score</th>${headerCols}</tr></thead>
       <tbody>${rows}</tbody>
     </table></div>`:'<p style="text-align:center;color:var(--muted);padding:20px">No reports found</p>';
 }
@@ -707,9 +733,9 @@ async function downloadReportExcel(){
   const date=mode==='daily'?document.getElementById('repDate').value:null;
   const month=mode==='monthly'?document.getElementById('repMonth').value:null;
   const res=await apiCall('admin_getReports',{date,month,mode});
-  const data=(res.data||[]).sort((a,b)=>b.score-a.score);
+  const data=(res.data||[]).sort((a,b)=>Number(b.score)-Number(a.score)||(a.name||'').localeCompare(b.name||''));
   if(!data.length){showToast('No data to export');return}
-  const headers=['Rank','Name','Branch','Score',...PARAMS.map(p=>p.name)];
+  const headers=['Rank','Name','Branch','YS Score',...PARAMS.map(p=>p.name)];
   const csvRows=[headers.join(',')];
   data.forEach((r,i)=>{
     const vals=[i+1,`"${r.name}"`,`"${r.branch}"`,r.score,...PARAMS.map(p=>r.values?.[p.id]||0)];
@@ -725,9 +751,9 @@ async function downloadReportPng(){
   const date=mode==='daily'?document.getElementById('repDate').value:null;
   const month=mode==='monthly'?document.getElementById('repMonth').value:null;
   const res=await apiCall('admin_getReports',{date,month,mode});
-  const data=(res.data||[]).sort((a,b)=>b.score-a.score);
+  const data=(res.data||[]).sort((a,b)=>Number(b.score)-Number(a.score)||(a.name||'').localeCompare(b.name||''));
   generatePng('Service Report – '+(date||month),data,
-    ['#','Name','Branch','Score'],['_rank','name','branch','score'],true);
+    ['Rank','Name','Branch','YS Score'],['_rank','name','branch','score'],true);
 }
 
 // ══ MASTER DATA ══
@@ -810,100 +836,54 @@ async function loadBudgetAdmin(){
 
 async function saveBudget(){
   const month=document.getElementById('budgetMonth').value;
-  if(!month){showToast('⚠️ Select a month first');return}
   const masterRes=await apiCall('admin_getMasterData');
   const branches=(masterRes.data||[]).map(r=>r.branch);
-  if(!branches.length){showToast('⚠️ No branches found');return}
-
-  showLoading(`Saving budget (0/${branches.length})…`);
-  let errors=[];
-  // KEY FIX: Save ONE branch at a time — keeps URL payload small
-  for(let i=0;i<branches.length;i++){
-    const branch=branches[i];
-    const key=branch.replace(/[\s/]/g,'_');
-    const vals={};
+  const budgetData={};
+  branches.forEach(branch=>{
+    const key=branch.replace(/\s/g,'_');
+    budgetData[branch]={};
     PARAMS.forEach(p=>{
       const inp=document.getElementById(`bud_${key}_${p.id}`);
-      vals[p.id]=parseInt(inp?.value)||0;
+      budgetData[branch][p.id]=parseInt(inp?.value)||0;
     });
-    document.getElementById('loadingText').textContent=`Saving ${i+1}/${branches.length}: ${branch}…`;
-    const res=await apiCall('admin_saveBudget1',{branch, month, vals:JSON.stringify(vals)});
-    if(!res.success) errors.push(branch+': '+(res.error||'failed'));
-  }
+  });
+  showLoading('Saving budget…');
+  const res=await apiCall('admin_saveBudgets',{month,data:budgetData});
   hideLoading();
-  if(errors.length){showToast('⚠️ Some errors: '+errors.join('; '),5000);}
-  else{showToast('✅ Budget saved for all '+branches.length+' branches!');}
-}
-
-async function uploadBudgetCSV(input){
-  const file=input.files[0];if(!file)return;
-  const month=document.getElementById('budgetMonth').value;
-  if(!month){showToast('⚠️ Select month first');return}
-  const text=await file.text();
-  const lines=text.split('\n').filter(l=>l.trim());
-  if(lines.length<2){showToast('⚠️ CSV is empty');return}
-  const rows=[];
-  for(let i=1;i<lines.length;i++){
-    const cols=lines[i].split(',').map(c=>c.trim().replace(/"/g,''));
-    const branch=cols[0];if(!branch)continue;
-    const vals={};
-    PARAMS.forEach((p,pi)=>{vals[p.id]=parseInt(cols[pi+1])||0});
-    rows.push({branch,vals});
-  }
-  showLoading(`Uploading 0/${rows.length} branches…`);
-  let errors=[];
-  for(let i=0;i<rows.length;i++){
-    const {branch,vals}=rows[i];
-    document.getElementById('loadingText').textContent=`Uploading ${i+1}/${rows.length}: ${branch}…`;
-    const res=await apiCall('admin_saveBudget1',{branch, month, vals:JSON.stringify(vals)});
-    if(!res.success) errors.push(branch+': '+(res.error||'failed'));
-  }
-  hideLoading();
-  if(errors.length){showToast('⚠️ Errors: '+errors.join('; '),5000);}
-  else{showToast(`✅ Budget uploaded for ${rows.length} branches!`);}
-  loadBudgetAdmin();
-  input.value='';
+  if(res.success)showToast('✅ Budget saved!');else showToast('❌ '+res.error);
 }
 
 function downloadBudgetTemplate(){
   const headers=['Branch',...PARAMS.map(p=>p.name)];
-  const sampleBranches=['MALAPPURAM','KOTTAKKAL','PUTHANATHANI','(add more branches...)'];
-  const csv=[headers.join(','),...sampleBranches.map(b=>[`"${b}"`,...PARAMS.map(()=>0)].join(','))];
+  const csv=[headers.join(',')];
+  document.getElementById('masterTableWrap').querySelectorAll&&
+  ['MALAPPURAM','KOTTAKKAL','PUTHANATHANI'].forEach(b=>csv.push([`"${b}"`,...PARAMS.map(()=>0)].join(',')));
   const blob=new Blob([csv.join('\n')],{type:'text/csv'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
   a.download='BudgetTemplate.csv';a.click();
 }
 
-// ══ CONNECTION TEST ══
-async function testConnection(){
-  const badge=document.getElementById('connBadge');
-  if(SCRIPT_URL.includes('YOUR_SCRIPT_ID')){
-    badge.style.background='#fff3e0';badge.style.color='#e65100';
-    badge.textContent='⚙️ URL not set';
-    showToast('⚠️ Replace YOUR_SCRIPT_ID_HERE in the HTML file!',5000);return;
+async function uploadBudgetCSV(input){
+  const file=input.files[0];if(!file)return;
+  const text=await file.text();
+  const lines=text.split('\n').filter(l=>l.trim());
+  const headers=lines[0].split(',').map(h=>h.trim().replace(/"/g,''));
+  const month=document.getElementById('budgetMonth').value;
+  if(!month){showToast('⚠️ Select month first');return}
+  const budgetData={};
+  for(let i=1;i<lines.length;i++){
+    const cols=lines[i].split(',').map(c=>c.trim().replace(/"/g,''));
+    const branch=cols[0];
+    if(!branch)continue;
+    budgetData[branch]={};
+    PARAMS.forEach((p,pi)=>{budgetData[branch][p.id]=parseInt(cols[pi+1])||0});
   }
-  badge.textContent='🔌 Testing…';badge.style.background='#e3f2fd';badge.style.color='#1565c0';
-  const res=await apiCall('ping');
-  if(res.success){
-    badge.textContent='🟢 Connected';badge.style.background='#e8f5e9';badge.style.color='#1b5e20';
-    showToast('✅ Server connected: '+res.msg);
-  } else {
-    badge.textContent='🔴 Disconnected';badge.style.background='#fce4ec';badge.style.color='#880e4f';
-    showToast('❌ Connection failed: '+(res.error||'unknown'),5000);
-  }
-}
-
-async function setupSheets(){
-  if(!confirm('This will initialize Google Sheets (creates SS_Users, SS_Attendance, etc.) and seed the 22 branches. Only needed once. Continue?'))return;
-  showLoading('Setting up sheets…');
-  const res=await apiCall('setupSheets');
+  showLoading('Uploading…');
+  const res=await apiCall('admin_saveBudgets',{month,data:budgetData});
   hideLoading();
-  if(res.success){
-    showToast('✅ '+res.message,6000);
-    setTimeout(()=>refreshAll(),1000);
-  } else {
-    showToast('❌ Setup failed: '+(res.error||'unknown'),6000);
-  }
+  if(res.success){showToast('✅ Budget uploaded!');loadBudgetAdmin();}
+  else showToast('❌ '+res.error);
+  input.value='';
 }
 
 // ══ HOLIDAYS ══
@@ -1048,7 +1028,7 @@ async function loadUsers(){
 function openResetPwd(empCode,name){
   resetPwdEmpCode=empCode;
   document.getElementById('resetPwdUser').textContent='Resetting password for: '+name;
-  document.getElementById('resetPwdInput').value='Sbi@1234';
+  document.getElementById('resetPwdInput').value='Seva@1234';
   document.getElementById('resetPwdModal').style.display='flex';
 }
 
