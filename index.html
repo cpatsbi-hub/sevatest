@@ -410,6 +410,12 @@ input[type=number]::-webkit-inner-spin-button{opacity:1}
         </div>
       </div>
 
+      <!-- SECTION: Registrations -->
+      <div class="section-header">📝 Registrations</div>
+      <div class="card" style="padding:12px 16px" id="sect-reg">
+        <!-- registration params injected by JS -->
+      </div>
+
       <!-- SECTION: YONO -->
       <div class="section-header">📱 YONO Channel</div>
       <div class="card" style="padding:12px 16px" id="sect-yono">
@@ -741,10 +747,13 @@ async function submitAttendance(){
    SERVICE REPORT
 ══════════════════════════════ */
 function buildReportForm(){
+  const REG_IDS=['p1','p2','p3'];
   const sections={yono:'sect-yono',wb:'sect-wb',tf:'sect-tf',other:'sect-other'};
-  Object.values(sections).forEach(id=>document.getElementById(id).innerHTML='');
+  ['sect-reg',...Object.values(sections)].forEach(id=>document.getElementById(id).innerHTML='');
   PARAMS.forEach(p=>{
-    const container=document.getElementById(sections[p.channel]);
+    // Registration params go into sect-reg regardless of channel
+    const targetId=REG_IDS.includes(p.id)?'sect-reg':sections[p.channel];
+    const container=document.getElementById(targetId);
     if(!container)return;
     const budget=budgetData[p.id]||0;
     const div=document.createElement('div');
@@ -882,7 +891,13 @@ function buildWaMessage(score,missed,values){
   msg+=`📅 Date: ${today}\n`;
   msg+=`⭐ Score (YS): *${score}*\n\n`;
   msg+=`📋 *Service Details:*\n`;
+  // Club registrations (p1=YONO, p2=WA Banking, p3=CBDC)
+  const regLabels={p1:'YONO',p2:'WA Banking',p3:'CBDC'};
+  const regParts=['p1','p2','p3'].map(id=>`${regLabels[id]}: ${values[id]||0}`);
+  const anyRegNonZero=['p1','p2','p3'].some(id=>(values[id]||0)>0);
+  if(anyRegNonZero) msg+=`• Registrations: ${regParts.join(' | ')}\n`;
   PARAMS.forEach(p=>{
+    if(['p1','p2','p3'].includes(p.id)) return; // handled above
     const v=values[p.id]||0;
     if(v>0) msg+=`• ${p.name}: ${v}\n`;
   });
