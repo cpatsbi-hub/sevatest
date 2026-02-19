@@ -252,7 +252,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:1}
     <div class="login-logo">
       <div class="big-logo">SS</div>
       <h1>Seva Sarathi</h1>
-      <p>Malappuram Region</p>
+      <p>Malappuram Region · State Bank of India</p>
     </div>
     <div class="login-card">
       <h2>🔐 Sign In</h2>
@@ -292,7 +292,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:1}
       </div>
       <div class="form-group">
         <label>New Password</label>
-        <input type="password" id="cpNew" placeholder="Min 8 chars, not Seva@1234" oninput="checkPwdStrength()">
+        <input type="password" id="cpNew" placeholder="Min 8 chars, not Sbi@1234" oninput="checkPwdStrength()">
         <div class="pwd-strength" id="pwdStrengthBar"></div>
         <p id="pwdStrengthText" style="font-size:11px;color:var(--muted);margin-top:4px"></p>
       </div>
@@ -408,12 +408,6 @@ input[type=number]::-webkit-inner-spin-button{opacity:1}
             0 missed parameters
           </div>
         </div>
-      </div>
-
-      <!-- SECTION: Registrations -->
-      <div class="section-header">📝 Registrations</div>
-      <div class="card" style="padding:12px 16px" id="sect-reg">
-        <!-- registration params injected by JS -->
       </div>
 
       <!-- SECTION: YONO -->
@@ -639,7 +633,7 @@ async function doChangePassword(){
   const n=document.getElementById('cpNew').value;
   const c=document.getElementById('cpConfirm').value;
   if(!cur||!n||!c){showToast('⚠️ Fill all fields');return}
-  if(n==='Seva@1234'){showToast('❌ New password cannot be the default');return}
+  if(n==='Sbi@1234'){showToast('❌ New password cannot be the default');return}
   if(n.length<6){showToast('❌ Min 6 characters required');return}
   if(n!==c){showToast('❌ Passwords do not match');return}
   showLoading('Updating password…');
@@ -747,12 +741,10 @@ async function submitAttendance(){
    SERVICE REPORT
 ══════════════════════════════ */
 function buildReportForm(){
-  const REG_IDS=['p1','p2','p3'];
   const sections={yono:'sect-yono',wb:'sect-wb',tf:'sect-tf',other:'sect-other'};
-  ['sect-reg',...Object.values(sections)].forEach(id=>document.getElementById(id).innerHTML='');
+  Object.values(sections).forEach(id=>document.getElementById(id).innerHTML='');
   PARAMS.forEach(p=>{
-    const targetId=REG_IDS.includes(p.id)?'sect-reg':sections[p.channel];
-    const container=document.getElementById(targetId);
+    const container=document.getElementById(sections[p.channel]);
     if(!container)return;
     const budget=budgetData[p.id]||0;
     const div=document.createElement('div');
@@ -890,18 +882,12 @@ function buildWaMessage(score,missed,values){
   msg+=`📅 Date: ${today}\n`;
   msg+=`⭐ Score (YS): *${score}*\n\n`;
   msg+=`📋 *Service Details:*\n`;
-  // Club registrations (p1=YONO, p2=WA Banking, p3=CBDC) into one line
-  const regLabels={p1:'YONO',p2:'WA Banking',p3:'CBDC'};
-  const regParts=['p1','p2','p3'].map(id=>`${regLabels[id]}: ${values[id]||0}`);
-  const anyRegNonZero=['p1','p2','p3'].some(id=>(values[id]||0)>0);
-  if(anyRegNonZero) msg+=`• Registrations: ${regParts.join(' | ')}\n`;
   PARAMS.forEach(p=>{
-    if(['p1','p2','p3'].includes(p.id)) return; // handled above
     const v=values[p.id]||0;
-    if(v>0) msg+=`• ${p.name}: ${v}\n`;
+    msg+=`• ${p.name}: ${v}\n`;
   });
   if(missed.length>0){
-    msg+=`\n⚠️ *Missed:*\n`;
+    msg+=`\n⚠️ *I missed these:*\n`;
     missed.forEach((m,i)=>msg+=`${i+1}. ${m}\n`);
   }
   msg+=`\n_Submitted via Seva Sarathi App_`;
