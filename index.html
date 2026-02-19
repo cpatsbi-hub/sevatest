@@ -256,6 +256,9 @@ input[type=number]::-webkit-inner-spin-button{opacity:1}
     </div>
     <div class="login-card">
       <h2>🔐 Sign In</h2>
+      <div id="connStatus" style="display:none;padding:10px 14px;border-radius:10px;font-size:13px;
+        font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:8px">
+      </div>
       <div class="form-group">
         <label>Employee Code</label>
         <input type="text" id="loginEmpCode" placeholder="Enter your employee code" autocomplete="username">
@@ -475,7 +478,11 @@ input[type=number]::-webkit-inner-spin-button{opacity:1}
    CONFIGURATION — REPLACE THIS URL
    after deploying your Google Apps Script
 ══════════════════════════════════════ */
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzitsKO0fDK93Da9tkDbQ9T7d2b4Stj_m24old82KHu8_rhbXm9wNty5GgMjymYMHcvAw/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyRkRhsxKv0SZhWZU6E84oGPcR_9_HkkdR1cavN50GVzxMXiS9yusuGU_wIOHSwHVjvXQ/exec';
+
+// ── API CALL via GET (avoids CORS preflight issues with Apps Script) ──
+// Apps Script only reliably handles GET requests from external browsers.
+// We encode the entire JSON payload as a URL parameter.
 
 /* ══════════════════════════════
    MASTER DATA (fallback / offline)
@@ -571,18 +578,28 @@ function showToast(msg, duration=3000){
 
 /* ══════════════════════════════
    API CALLS
+   All calls use GET to avoid Apps Script
+   CORS/redirect issues with POST bodies.
+   Apps Script's doGet handles CORS natively.
 ══════════════════════════════ */
 async function apiCall(action, data={}){
-  const payload = {action, ...data};
+  if(SCRIPT_URL.includes('YOUR_SCRIPT_ID')){
+    return {success:false, error:'⚙️ Script URL not configured. Please replace YOUR_SCRIPT_ID_HERE in the HTML file.'};
+  }
   try {
-    const res = await fetch(SCRIPT_URL,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(payload)
-    });
-    return await res.json();
+    const params = new URLSearchParams({action, payload: JSON.stringify(data)});
+    const url = `${SCRIPT_URL}?${params.toString()}&_t=${Date.now()}`;
+    const res  = await fetch(url, {redirect:'follow'});
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const text = await res.text();
+    if(!text || !text.trim()) throw new Error('Empty response from server');
+    // Find the first valid JSON object or array
+    const start = text.indexOf('{') !== -1 ? text.indexOf('{') : text.indexOf('[');
+    if(start === -1) throw new Error('No JSON in response: ' + text.substring(0,100));
+    const clean = text.substring(start);
+    return JSON.parse(clean);
   } catch(e) {
-    console.error('API error',e);
+    console.error('apiCall ['+action+'] error:', e.message);
     return {success:false, error:e.message};
   }
 }
@@ -950,6 +967,36 @@ function scheduleNotif(targetH,targetM,title,body){
 }
 
 /* ══════════════════════════════
+   CONNECTION TEST
+══════════════════════════════ */
+async function testConnection(){
+  const el = document.getElementById('connStatus');
+  if(!el) return;
+  if(SCRIPT_URL.includes('YOUR_SCRIPT_ID')){
+    el.style.display='flex';
+    el.style.background='#fff3e0'; el.style.color='#e65100';
+    el.style.border='1px solid #ffcc80';
+    el.innerHTML='⚙️ Script URL not set. Update SCRIPT_URL in the HTML file.';
+    return;
+  }
+  el.style.display='flex';
+  el.style.background='#e3f2fd'; el.style.color='#1565c0';
+  el.style.border='1px solid #90caf9';
+  el.innerHTML='🔌 Checking connection to server…';
+  const res = await apiCall('ping',{});
+  if(res.success){
+    el.style.background='#e8f5e9'; el.style.color='#1b5e20';
+    el.style.border='1px solid #a5d6a7';
+    el.innerHTML='🟢 Connected to server';
+    setTimeout(()=>{ el.style.display='none'; }, 3000);
+  } else {
+    el.style.background='#fce4ec'; el.style.color='#880e4f';
+    el.style.border='1px solid #f48fb1';
+    el.innerHTML='🔴 Cannot reach server. Check SCRIPT_URL or deploy status. Error: '+(res.error||'unknown');
+  }
+}
+
+/* ══════════════════════════════
    LOGOUT
 ══════════════════════════════ */
 function doLogout(){
@@ -958,17 +1005,20 @@ function doLogout(){
   document.getElementById('loginEmpCode').value='';
   document.getElementById('loginPassword').value='';
   showPage('page-login');
+  testConnection();
 }
 
 /* ══════════════════════════════
    AUTO-LOGIN CHECK
 ══════════════════════════════ */
 (async function init(){
+  // Test connection first, show on login page
+  testConnection();
+
   const saved=localStorage.getItem('ss_user');
   if(saved){
     try{
       const u=JSON.parse(saved);
-      // Re-validate session via API
       showLoading('Restoring session…');
       const res=await apiCall('validateSession',{empCode:u.empCode});
       hideLoading();
@@ -977,7 +1027,7 @@ function doLogout(){
         enterApp();
         return;
       }
-    }catch(e){}
+    }catch(e){ console.error('Session restore error:', e); }
     hideLoading();
   }
   showPage('page-login');
