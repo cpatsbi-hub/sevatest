@@ -486,7 +486,7 @@ tbody tr:nth-child(even):hover{background:#f7f9fc}
     <p id="resetPwdUser" style="font-size:13px;color:var(--muted);margin-bottom:14px"></p>
     <div class="form-group">
       <label>New Password</label>
-      <input type="text" id="resetPwdInput" value="Seva@1234" placeholder="New password">
+      <input type="text" id="resetPwdInput" value="Sbi@1234" placeholder="New password">
     </div>
     <div style="display:flex;gap:10px">
       <button class="btn btn-primary btn-sm" onclick="confirmResetPwd()">Reset</button>
@@ -627,7 +627,6 @@ async function loadAttendance(){
   const date=document.getElementById('attDate').value;
   if(!date)return;
   showLoading('Loading attendance…');
-  // Fetch attendance AND master list in parallel
   const [attRes,masterRes]=await Promise.all([
     apiCall('admin_getAttendance',{date}),
     apiCall('admin_getMasterData')
@@ -635,26 +634,16 @@ async function loadAttendance(){
   hideLoading();
   const marked=attRes.data||[];
   const master=masterRes.data||[];
-  // Find who hasn't marked attendance at all
   const markedCodes=new Set(marked.map(r=>String(r.empCode).toUpperCase()));
   const notReported=master
     .filter(m=>!markedCodes.has(String(m.empCode).toUpperCase()))
     .map(m=>({name:m.name,branch:m.branch,empCode:m.empCode,status:'Not Reported',timestamp:'—'}));
-  // Merge and sort: Present → Absent → Not Reported
   const ORDER={Present:0,Absent:1,'Not Reported':2};
   const allData=[...marked,...notReported].sort((a,b)=>{
     const diff=(ORDER[a.status]??2)-(ORDER[b.status]??2);
-    if(diff!==0)return diff;
-    return a.name.localeCompare(b.name); // alphabetical within each group
+    return diff!==0?diff:a.name.localeCompare(b.name);
   });
   const statusColor={Present:'present',Absent:'absent','Not Reported':'not-reported'};
-  const rows=allData.map(r=>`<tr>
-    <td>${r.name}</td>
-    <td>${r.branch}</td>
-    <td><span class="status-pill ${statusColor[r.status]||'not-reported'}">${r.status}</span></td>
-    <td style="font-size:12px;color:var(--muted)">${r.timestamp||'—'}</td>
-  </tr>`).join('');
-  // Summary counts
   const presentCount=allData.filter(r=>r.status==='Present').length;
   const absentCount=allData.filter(r=>r.status==='Absent').length;
   const notRepCount=allData.filter(r=>r.status==='Not Reported').length;
@@ -663,13 +652,18 @@ async function loadAttendance(){
     <span class="status-pill absent">❌ Absent: ${absentCount}</span>
     <span class="status-pill not-reported">⏳ Not Reported: ${notRepCount}</span>
   </div>`;
-  document.getElementById('attTableWrap').innerHTML=
-    allData.length
-      ? summary+`<div class="table-wrap" id="attTable"><table>
-          <thead><tr><th>Name</th><th>Branch</th><th>Status</th><th>Time</th></tr></thead>
-          <tbody>${rows}</tbody>
-        </table></div>`
-      : '<p style="text-align:center;color:var(--muted);padding:20px">No data for this date</p>';
+  const rows=allData.map(r=>`<tr>
+    <td>${r.name}</td>
+    <td>${r.branch}</td>
+    <td><span class="status-pill ${statusColor[r.status]||'not-reported'}">${r.status}</span></td>
+    <td style="font-size:12px;color:var(--muted)">${r.timestamp||'—'}</td>
+  </tr>`).join('');
+  document.getElementById('attTableWrap').innerHTML=allData.length
+    ?summary+`<div class="table-wrap" id="attTable"><table>
+        <thead><tr><th>Name</th><th>Branch</th><th>Status</th><th>Time</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table></div>`
+    :'<p style="text-align:center;color:var(--muted);padding:20px">No data for this date</p>';
 }
 
 async function downloadAttPng(){
@@ -686,7 +680,7 @@ async function downloadAttPng(){
     .map(m=>({name:m.name,branch:m.branch,status:'Not Reported'}));
   const ORDER={Present:0,Absent:1,'Not Reported':2};
   const allData=[...marked,...notReported].sort((a,b)=>(ORDER[a.status]??2)-(ORDER[b.status]??2));
-  generatePng('Attendance Report – '+date, allData,
+  generatePng('Attendance Report – '+date,allData,
     ['Name','Branch','Status'],['name','branch','status']);
 }
 
@@ -708,7 +702,6 @@ async function loadReports(){
   showLoading('Loading reports…');
   const res=await apiCall('admin_getReports',{date,month,mode});
   hideLoading();
-  // Sort highest YS score first, lowest last
   const data=(res.data||[]).sort((a,b)=>Number(b.score)-Number(a.score)||(a.name||'').localeCompare(b.name||''));
   const rows=data.map((r,i)=>{
     const rankClass=i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-other';
@@ -716,14 +709,14 @@ async function loadReports(){
     return `<tr>
       <td><div class="rank-badge ${rankClass}">${i+1}</div></td>
       <td>${r.name}</td><td>${r.branch}</td>
-      <td style="font-weight:700;color:var(--primary-mid)">${r.score}</td>
+      <td style="font-weight:700;color:var(--primary)">${r.score}</td>
       ${paramCols}
     </tr>`;
   }).join('');
   const headerCols=PARAMS.map(p=>`<th style="font-size:11px">${p.id.toUpperCase()}</th>`).join('');
   document.getElementById('reportTableWrap').innerHTML=data.length?
     `<div class="table-wrap" id="repTable" style="overflow-x:auto"><table>
-      <thead><tr><th>Rank</th><th>Name</th><th>Branch</th><th>YS Score</th>${headerCols}</tr></thead>
+      <thead><tr><th>#</th><th>Name</th><th>Branch</th><th>Score</th>${headerCols}</tr></thead>
       <tbody>${rows}</tbody>
     </table></div>`:'<p style="text-align:center;color:var(--muted);padding:20px">No reports found</p>';
 }
@@ -733,9 +726,9 @@ async function downloadReportExcel(){
   const date=mode==='daily'?document.getElementById('repDate').value:null;
   const month=mode==='monthly'?document.getElementById('repMonth').value:null;
   const res=await apiCall('admin_getReports',{date,month,mode});
-  const data=(res.data||[]).sort((a,b)=>Number(b.score)-Number(a.score)||(a.name||'').localeCompare(b.name||''));
+  const data=(res.data||[]).sort((a,b)=>Number(b.score)-Number(a.score)||(a.name||''). localeCompare(b.name||''));
   if(!data.length){showToast('No data to export');return}
-  const headers=['Rank','Name','Branch','YS Score',...PARAMS.map(p=>p.name)];
+  const headers=['Rank','Name','Branch','Score',...PARAMS.map(p=>p.name)];
   const csvRows=[headers.join(',')];
   data.forEach((r,i)=>{
     const vals=[i+1,`"${r.name}"`,`"${r.branch}"`,r.score,...PARAMS.map(p=>r.values?.[p.id]||0)];
@@ -751,9 +744,9 @@ async function downloadReportPng(){
   const date=mode==='daily'?document.getElementById('repDate').value:null;
   const month=mode==='monthly'?document.getElementById('repMonth').value:null;
   const res=await apiCall('admin_getReports',{date,month,mode});
-  const data=(res.data||[]).sort((a,b)=>Number(b.score)-Number(a.score)||(a.name||'').localeCompare(b.name||''));
+  const data=(res.data||[]).sort((a,b)=>Number(b.score)-Number(a.score));
   generatePng('Service Report – '+(date||month),data,
-    ['Rank','Name','Branch','YS Score'],['_rank','name','branch','score'],true);
+    ['#','Name','Branch','Score'],['_rank','name','branch','score'],true);
 }
 
 // ══ MASTER DATA ══
@@ -1028,7 +1021,7 @@ async function loadUsers(){
 function openResetPwd(empCode,name){
   resetPwdEmpCode=empCode;
   document.getElementById('resetPwdUser').textContent='Resetting password for: '+name;
-  document.getElementById('resetPwdInput').value='Seva@1234';
+  document.getElementById('resetPwdInput').value='Sbi@1234';
   document.getElementById('resetPwdModal').style.display='flex';
 }
 
@@ -1090,7 +1083,7 @@ function generatePng(title,data,cols,keys,addRank=false){
   });
   // Footer
   ctx.fillStyle='#6b7a90';ctx.font='11px Noto Sans, sans-serif';
-  ctx.fillText('Seva Sarathi Program',padding,y+padding+16);
+  ctx.fillText('State Bank of India · Seva Sarathi Program',padding,y+padding+16);
   // Download
   const a=document.createElement('a');
   a.href=canvas.toDataURL('image/png');
