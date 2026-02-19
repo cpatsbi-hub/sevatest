@@ -270,7 +270,8 @@ tbody tr:nth-child(even):hover{background:#f7f9fc}
       <h1 id="topbarTitle">Dashboard</h1>
     </div>
     <div class="topbar-right">
-      <div class="badge-live">Live</div>
+      <div class="badge-live" id="connBadge" style="cursor:pointer" onclick="testConnection()" title="Click to test connection">● Live</div>
+      <button class="btn btn-warning btn-sm" onclick="setupSheets()" title="Initialize Google Sheets on first use">⚙️ Setup Sheets</button>
       <button class="btn btn-outline btn-sm" onclick="refreshAll()">🔄 Refresh</button>
     </div>
   </div>
@@ -496,7 +497,7 @@ tbody tr:nth-child(even):hover{background:#f7f9fc}
 </div>
 
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzitsKO0fDK93Da9tkDbQ9T7d2b4Stj_m24old82KHu8_rhbXm9wNty5GgMjymYMHcvAw/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyRkRhsxKv0SZhWZU6E84oGPcR_9_HkkdR1cavN50GVzxMXiS9yusuGU_wIOHSwHVjvXQ/exec';
 
 const PARAMS = [
   {id:'p1',name:'YONO Registration',channel:'yono',wt:2},
@@ -534,15 +535,23 @@ function showToast(msg,dur=3000){
 }
 
 async function apiCall(action,data={}){
-  const payload={action,...data};
+  if(SCRIPT_URL.includes('YOUR_SCRIPT_ID')){
+    return{success:false,error:'Script URL not configured. Replace YOUR_SCRIPT_ID_HERE in this file.'};
+  }
   try{
-    const r=await fetch(SCRIPT_URL,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(payload)
-    });
-    return await r.json();
-  }catch(e){return{success:false,error:e.message}}
+    const params=new URLSearchParams({action, payload:JSON.stringify(data)});
+    const url=`${SCRIPT_URL}?${params.toString()}&_t=${Date.now()}`;
+    const res=await fetch(url,{redirect:'follow'});
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const text=await res.text();
+    if(!text||!text.trim()) throw new Error('Empty response from server');
+    const start=text.indexOf('{')!==-1?text.indexOf('{'):text.indexOf('[');
+    if(start===-1) throw new Error('No JSON in response: '+text.substring(0,120));
+    return JSON.parse(text.substring(start));
+  }catch(e){
+    console.error('apiCall['+action+']',e.message);
+    return{success:false,error:e.message};
+  }
 }
 
 function goSection(id){
@@ -576,8 +585,8 @@ function refreshAll(){if(currentSection==='dash')loadDashboard();else goSection(
   const m=new Date().toISOString().substring(0,7);
   document.getElementById('budgetMonth').value=m;
   document.getElementById('effMonth').value=m;
+  testConnection(); // Test API on load
   loadDashboard();
-  // Auto refresh every 2 min
   setInterval(()=>{if(currentSection==='dash')loadDashboard()},120000);
 })();
 
@@ -801,54 +810,100 @@ async function loadBudgetAdmin(){
 
 async function saveBudget(){
   const month=document.getElementById('budgetMonth').value;
+  if(!month){showToast('⚠️ Select a month first');return}
   const masterRes=await apiCall('admin_getMasterData');
   const branches=(masterRes.data||[]).map(r=>r.branch);
-  const budgetData={};
-  branches.forEach(branch=>{
-    const key=branch.replace(/\s/g,'_');
-    budgetData[branch]={};
+  if(!branches.length){showToast('⚠️ No branches found');return}
+
+  showLoading(`Saving budget (0/${branches.length})…`);
+  let errors=[];
+  // KEY FIX: Save ONE branch at a time — keeps URL payload small
+  for(let i=0;i<branches.length;i++){
+    const branch=branches[i];
+    const key=branch.replace(/[\s/]/g,'_');
+    const vals={};
     PARAMS.forEach(p=>{
       const inp=document.getElementById(`bud_${key}_${p.id}`);
-      budgetData[branch][p.id]=parseInt(inp?.value)||0;
+      vals[p.id]=parseInt(inp?.value)||0;
     });
-  });
-  showLoading('Saving budget…');
-  const res=await apiCall('admin_saveBudgets',{month,data:budgetData});
+    document.getElementById('loadingText').textContent=`Saving ${i+1}/${branches.length}: ${branch}…`;
+    const res=await apiCall('admin_saveBudget1',{branch, month, vals:JSON.stringify(vals)});
+    if(!res.success) errors.push(branch+': '+(res.error||'failed'));
+  }
   hideLoading();
-  if(res.success)showToast('✅ Budget saved!');else showToast('❌ '+res.error);
+  if(errors.length){showToast('⚠️ Some errors: '+errors.join('; '),5000);}
+  else{showToast('✅ Budget saved for all '+branches.length+' branches!');}
+}
+
+async function uploadBudgetCSV(input){
+  const file=input.files[0];if(!file)return;
+  const month=document.getElementById('budgetMonth').value;
+  if(!month){showToast('⚠️ Select month first');return}
+  const text=await file.text();
+  const lines=text.split('\n').filter(l=>l.trim());
+  if(lines.length<2){showToast('⚠️ CSV is empty');return}
+  const rows=[];
+  for(let i=1;i<lines.length;i++){
+    const cols=lines[i].split(',').map(c=>c.trim().replace(/"/g,''));
+    const branch=cols[0];if(!branch)continue;
+    const vals={};
+    PARAMS.forEach((p,pi)=>{vals[p.id]=parseInt(cols[pi+1])||0});
+    rows.push({branch,vals});
+  }
+  showLoading(`Uploading 0/${rows.length} branches…`);
+  let errors=[];
+  for(let i=0;i<rows.length;i++){
+    const {branch,vals}=rows[i];
+    document.getElementById('loadingText').textContent=`Uploading ${i+1}/${rows.length}: ${branch}…`;
+    const res=await apiCall('admin_saveBudget1',{branch, month, vals:JSON.stringify(vals)});
+    if(!res.success) errors.push(branch+': '+(res.error||'failed'));
+  }
+  hideLoading();
+  if(errors.length){showToast('⚠️ Errors: '+errors.join('; '),5000);}
+  else{showToast(`✅ Budget uploaded for ${rows.length} branches!`);}
+  loadBudgetAdmin();
+  input.value='';
 }
 
 function downloadBudgetTemplate(){
   const headers=['Branch',...PARAMS.map(p=>p.name)];
-  const csv=[headers.join(',')];
-  document.getElementById('masterTableWrap').querySelectorAll&&
-  ['MALAPPURAM','KOTTAKKAL','PUTHANATHANI'].forEach(b=>csv.push([`"${b}"`,...PARAMS.map(()=>0)].join(',')));
+  const sampleBranches=['MALAPPURAM','KOTTAKKAL','PUTHANATHANI','(add more branches...)'];
+  const csv=[headers.join(','),...sampleBranches.map(b=>[`"${b}"`,...PARAMS.map(()=>0)].join(','))];
   const blob=new Blob([csv.join('\n')],{type:'text/csv'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
   a.download='BudgetTemplate.csv';a.click();
 }
 
-async function uploadBudgetCSV(input){
-  const file=input.files[0];if(!file)return;
-  const text=await file.text();
-  const lines=text.split('\n').filter(l=>l.trim());
-  const headers=lines[0].split(',').map(h=>h.trim().replace(/"/g,''));
-  const month=document.getElementById('budgetMonth').value;
-  if(!month){showToast('⚠️ Select month first');return}
-  const budgetData={};
-  for(let i=1;i<lines.length;i++){
-    const cols=lines[i].split(',').map(c=>c.trim().replace(/"/g,''));
-    const branch=cols[0];
-    if(!branch)continue;
-    budgetData[branch]={};
-    PARAMS.forEach((p,pi)=>{budgetData[branch][p.id]=parseInt(cols[pi+1])||0});
+// ══ CONNECTION TEST ══
+async function testConnection(){
+  const badge=document.getElementById('connBadge');
+  if(SCRIPT_URL.includes('YOUR_SCRIPT_ID')){
+    badge.style.background='#fff3e0';badge.style.color='#e65100';
+    badge.textContent='⚙️ URL not set';
+    showToast('⚠️ Replace YOUR_SCRIPT_ID_HERE in the HTML file!',5000);return;
   }
-  showLoading('Uploading…');
-  const res=await apiCall('admin_saveBudgets',{month,data:budgetData});
+  badge.textContent='🔌 Testing…';badge.style.background='#e3f2fd';badge.style.color='#1565c0';
+  const res=await apiCall('ping');
+  if(res.success){
+    badge.textContent='🟢 Connected';badge.style.background='#e8f5e9';badge.style.color='#1b5e20';
+    showToast('✅ Server connected: '+res.msg);
+  } else {
+    badge.textContent='🔴 Disconnected';badge.style.background='#fce4ec';badge.style.color='#880e4f';
+    showToast('❌ Connection failed: '+(res.error||'unknown'),5000);
+  }
+}
+
+async function setupSheets(){
+  if(!confirm('This will initialize Google Sheets (creates SS_Users, SS_Attendance, etc.) and seed the 22 branches. Only needed once. Continue?'))return;
+  showLoading('Setting up sheets…');
+  const res=await apiCall('setupSheets');
   hideLoading();
-  if(res.success){showToast('✅ Budget uploaded!');loadBudgetAdmin();}
-  else showToast('❌ '+res.error);
-  input.value='';
+  if(res.success){
+    showToast('✅ '+res.message,6000);
+    setTimeout(()=>refreshAll(),1000);
+  } else {
+    showToast('❌ Setup failed: '+(res.error||'unknown'),6000);
+  }
 }
 
 // ══ HOLIDAYS ══
