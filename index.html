@@ -166,8 +166,6 @@ body{font-family:'Noto Sans',sans-serif;background:var(--bg);color:var(--text);m
 .score-val{font-family:'Rajdhani',sans-serif;font-size:36px;font-weight:700}
 .score-label{font-size:12px;opacity:0.85}
 
-.missed-highlight{color:var(--danger);font-weight:700}
-
 .btn-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
 
 /* ── MODAL ── */
@@ -177,11 +175,33 @@ body{font-family:'Noto Sans',sans-serif;background:var(--bg);color:var(--text);m
 .modal{background:#fff;border-radius:20px;padding:28px;width:100%;max-width:440px;
   box-shadow:0 20px 60px rgba(0,0,0,0.3);animation:fadeUp .3s ease;max-height:90vh;overflow-y:auto}
 .modal h3{font-family:'Rajdhani',sans-serif;font-size:20px;color:var(--primary);margin-bottom:12px;font-weight:700}
-.modal-wa-text{background:#e7f5ea;border:1px solid #a5d6a7;border-radius:10px;
-  padding:14px;font-size:13px;line-height:1.7;font-family:monospace;
-  white-space:pre-wrap;word-break:break-word;max-height:280px;overflow-y:auto;margin:12px 0}
-.modal-btns{display:flex;gap:10px;margin-top:16px}
-.modal-btns .btn{flex:1}
+
+/* ── WHATSAPP MODAL ── */
+.wa-preview-wrap{
+  background:#e5ddd5;
+  border-radius:12px;
+  padding:14px;
+  margin:12px 0;
+  max-height:380px;
+  overflow-y:auto;
+}
+.wa-bubble{
+  background:#fff;
+  border-radius:2px 14px 14px 14px;
+  padding:12px 14px;
+  font-size:13.5px;
+  line-height:1.75;
+  font-family:'Noto Sans',sans-serif;
+  white-space:pre-wrap;
+  word-break:break-word;
+  color:#111;
+  box-shadow:0 1px 3px rgba(0,0,0,0.15);
+  display:inline-block;
+  max-width:100%;
+}
+
+.modal-btns{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.modal-btns .btn{flex:1;min-width:80px}
 
 /* ── TOAST ── */
 #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);
@@ -222,8 +242,6 @@ body{font-family:'Noto Sans',sans-serif;background:var(--bg);color:var(--text);m
   border-radius:12px;padding:14px 16px;margin-bottom:16px;display:flex;gap:10px;align-items:flex-start}
 .reminder-banner .ri{font-size:22px}
 .reminder-banner p{font-size:13px;color:#e65100;font-weight:500}
-
-.info-chip{background:#e3f2fd;color:#1565c0;padding:4px 10px;border-radius:10px;font-size:12px;font-weight:600}
 
 .already-done-wrap{text-align:center;padding:30px 20px}
 .already-done-wrap .big-check{font-size:64px;margin-bottom:12px}
@@ -415,24 +433,19 @@ input[type=number]::-webkit-inner-spin-button{opacity:1}
 
       <!-- SECTION: YONO -->
       <div class="section-header">📱 YONO Channel</div>
-      <div class="card" style="padding:12px 16px" id="sect-yono">
-        <!-- params injected by JS -->
-      </div>
+      <div class="card" style="padding:12px 16px" id="sect-yono"></div>
 
       <!-- SECTION: WhatsApp Banking -->
       <div class="section-header">💬 WhatsApp Banking</div>
-      <div class="card" style="padding:12px 16px" id="sect-wb">
-      </div>
+      <div class="card" style="padding:12px 16px" id="sect-wb"></div>
 
       <!-- SECTION: Toll Free -->
       <div class="section-header">📞 Toll Free</div>
-      <div class="card" style="padding:12px 16px" id="sect-tf">
-      </div>
+      <div class="card" style="padding:12px 16px" id="sect-tf"></div>
 
       <!-- SECTION: Others -->
       <div class="section-header">🏦 Digital & Others</div>
-      <div class="card" style="padding:12px 16px" id="sect-other">
-      </div>
+      <div class="card" style="padding:12px 16px" id="sect-other"></div>
 
       <div class="btn-row">
         <button class="btn btn-outline" onclick="clearReport()">🗑 Clear</button>
@@ -450,12 +463,14 @@ input[type=number]::-webkit-inner-spin-button{opacity:1}
 ════════════════════════════════ -->
 <div class="modal-overlay" id="waModal">
   <div class="modal">
-    <h3>📤 Share on WhatsApp</h3>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:8px">Report formatted for WhatsApp. Copy and share:</p>
-    <div class="modal-wa-text" id="waText"></div>
+    <h3>💬 Share Report on WhatsApp</h3>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:4px">Preview your formatted report:</p>
+    <div class="wa-preview-wrap">
+      <div class="wa-bubble" id="waText"></div>
+    </div>
     <div class="modal-btns">
       <button class="btn btn-outline btn-sm" onclick="copyWaText()">📋 Copy</button>
-      <button class="btn btn-accent btn-sm" onclick="openWhatsApp()">💬 Open WA</button>
+      <button class="btn btn-accent btn-sm" onclick="openWhatsApp()">💬 WhatsApp</button>
       <button class="btn btn-success btn-sm" onclick="closeWaModal()">Done ✓</button>
     </div>
   </div>
@@ -474,19 +489,8 @@ input[type=number]::-webkit-inner-spin-button{opacity:1}
 </div>
 
 <script>
-/* ══════════════════════════════════════
-   CONFIGURATION — REPLACE THIS URL
-   after deploying your Google Apps Script
-══════════════════════════════════════ */
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbywT5rCTUhBT8xdT3Q16DK31TxRDYgfxdLVo4knUMRulIm_GZjncmGYwZ3tB7OD92Qr/exec';
 
-// ── API CALL via GET (avoids CORS preflight issues with Apps Script) ──
-// Apps Script only reliably handles GET requests from external browsers.
-// We encode the entire JSON payload as a URL parameter.
-
-/* ══════════════════════════════
-   MASTER DATA (fallback / offline)
-══════════════════════════════ */
 const MASTER_DATA = [
   {branch:"MALAPPURAM",name:"ANJALI K"},
   {branch:"KOTTAKKAL",name:"ASWATHY M K"},
@@ -512,41 +516,56 @@ const MASTER_DATA = [
   {branch:"MELATTUR",name:"MOHAMAD SHAHEER KALATHINGAL THODI"}
 ];
 
-/* ══════════════════════════════
-   PARAMETERS
-══════════════════════════════ */
 const PARAMS = [
-  {id:'p1', name:'YONO Registration', channel:'yono', wt:2},
-  {id:'p2', name:'WhatsApp Banking Reg', channel:'wb', wt:2},
-  {id:'p3', name:'CBDC Registration', channel:'other', wt:2},
-  {id:'p4', name:'YONO Cash (Withdrawal & Deposit)', channel:'yono', wt:1},
-  {id:'p5', name:'CDM/GCC Deposit', channel:'other', wt:1},
-  {id:'p6', name:'Feedbacks', channel:'other', wt:1},
-  {id:'p7', name:'APY Done', channel:'other', wt:1},
-  {id:'p8', name:'Term Deposit (YONO)', channel:'yono', wt:1},
-  {id:'p9', name:'PAI Done (YONO)', channel:'yono', wt:1},
-  {id:'p10',name:'ATM Card Issue (YONO/Toll Free)', channel:'tf', wt:1},
-  {id:'p11',name:'Cheque Book Issue (YONO/Tollfree/WB)', channel:'yono', wt:1},
-  {id:'p12',name:'Form 15G/H (YONO/WB)', channel:'yono', wt:1},
-  {id:'p13',name:'KYC Update (YONO/WB)', channel:'yono', wt:1},
-  {id:'p14',name:'Nominee Update (YONO)', channel:'yono', wt:1},
-  {id:'p15',name:'Transfer Done (YONO)', channel:'yono', wt:1},
-  {id:'p16',name:'Statement & Enquiry (YONO/WB/Toll free)', channel:'tf', wt:1}
+  {id:'p1', name:'YONO Registration',                          channel:'yono', wt:2},
+  {id:'p2', name:'WhatsApp Banking Reg',                       channel:'wb',   wt:2},
+  {id:'p3', name:'CBDC Registration',                          channel:'other',wt:2},
+  {id:'p4', name:'YONO Cash (Withdrawal & Deposit)',           channel:'yono', wt:1},
+  {id:'p5', name:'CDM/GCC Deposit',                            channel:'other',wt:1},
+  {id:'p6', name:'Feedbacks',                                  channel:'other',wt:1},
+  {id:'p7', name:'APY Done',                                   channel:'other',wt:1},
+  {id:'p8', name:'Term Deposit (YONO)',                        channel:'yono', wt:1},
+  {id:'p9', name:'PAI Done (YONO)',                            channel:'yono', wt:1},
+  {id:'p10',name:'ATM Card Issue (YONO/Toll Free)',            channel:'tf',   wt:1},
+  {id:'p11',name:'Cheque Book Issue (YONO/Tollfree/WB)',       channel:'yono', wt:1},
+  {id:'p12',name:'Form 15G/H (YONO/WB)',                       channel:'yono', wt:1},
+  {id:'p13',name:'KYC Update (YONO/WB)',                       channel:'yono', wt:1},
+  {id:'p14',name:'Nominee Update (YONO)',                      channel:'yono', wt:1},
+  {id:'p15',name:'Transfer Done (YONO)',                       channel:'yono', wt:1},
+  {id:'p16',name:'Statement & Enquiry (YONO/WB/Toll free)',    channel:'tf',   wt:1}
 ];
 
-/* ══════════════════════════════
-   STATE
-══════════════════════════════ */
-let currentUser = null;
-let selectedAtt = null;
-let budgetData = {};
+// ── WhatsApp message categories ──
+// Each category only appears in the message if at least one of its params is non-zero.
+const WA_CATEGORIES = [
+  {icon:'📱', name:'Digital Banking Registrations',    params:['p1','p2','p3']},
+  {icon:'💰', name:'Cash & Deposit Services',           params:['p4','p5']},
+  {icon:'🏦', name:'Savings & Investment Schemes',      params:['p7','p8','p9']},
+  {icon:'💳', name:'Card & Cheque Services',            params:['p10','p11']},
+  {icon:'📋', name:'Documentation & Compliance',        params:['p12','p13','p14']},
+  {icon:'🔄', name:'Transaction & Enquiry Services',    params:['p15','p16']},
+  {icon:'💬', name:'Other Services',                    params:['p6']}
+];
+
+// Quick param lookup by id
+const PARAM_MAP = {};
+PARAMS.forEach(p => { PARAM_MAP[p.id] = p; });
+
+let currentUser  = null;
+let selectedAtt  = null;
+let budgetData   = {};
 let confirmCallback = null;
-let waTextContent = '';
+let waTextContent   = '';
 
 function getToday(){
-  const d = new Date();
-  return d.toISOString().split('T')[0]; // YYYY-MM-DD
+  return new Date().toISOString().split('T')[0];
 }
+// Returns DD.MM.YYYY  (for WA message)
+function formatDateWA(isoDate){
+  const [y,m,d] = isoDate.split('-');
+  return `${d}.${m}.${y}`;
+}
+// Returns long display string
 function formatDateDisplay(d){
   const opts={weekday:'long',year:'numeric',month:'long',day:'numeric'};
   return new Date(d+'T00:00:00').toLocaleDateString('en-IN',opts);
@@ -570,7 +589,7 @@ function showLoading(msg='Please wait…'){
 }
 function hideLoading(){document.getElementById('loadingOverlay').classList.remove('active')}
 
-function showToast(msg, duration=3000){
+function showToast(msg,duration=3000){
   const t=document.getElementById('toast');
   t.textContent=msg; t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),duration);
@@ -578,29 +597,24 @@ function showToast(msg, duration=3000){
 
 /* ══════════════════════════════
    API CALLS
-   All calls use GET to avoid Apps Script
-   CORS/redirect issues with POST bodies.
-   Apps Script's doGet handles CORS natively.
 ══════════════════════════════ */
-async function apiCall(action, data={}){
+async function apiCall(action,data={}){
   if(SCRIPT_URL.includes('YOUR_SCRIPT_ID')){
-    return {success:false, error:'⚙️ Script URL not configured. Please replace YOUR_SCRIPT_ID_HERE in the HTML file.'};
+    return{success:false,error:'⚙️ Script URL not configured.'};
   }
-  try {
-    const params = new URLSearchParams({action, payload: JSON.stringify(data)});
-    const url = `${SCRIPT_URL}?${params.toString()}&_t=${Date.now()}`;
-    const res  = await fetch(url, {redirect:'follow'});
+  try{
+    const params=new URLSearchParams({action, payload:JSON.stringify(data)});
+    const url=`${SCRIPT_URL}?${params.toString()}&_t=${Date.now()}`;
+    const res=await fetch(url,{redirect:'follow'});
     if(!res.ok) throw new Error(`HTTP ${res.status}`);
-    const text = await res.text();
-    if(!text || !text.trim()) throw new Error('Empty response from server');
-    // Find the first valid JSON object or array
-    const start = text.indexOf('{') !== -1 ? text.indexOf('{') : text.indexOf('[');
-    if(start === -1) throw new Error('No JSON in response: ' + text.substring(0,100));
-    const clean = text.substring(start);
-    return JSON.parse(clean);
-  } catch(e) {
-    console.error('apiCall ['+action+'] error:', e.message);
-    return {success:false, error:e.message};
+    const text=await res.text();
+    if(!text||!text.trim()) throw new Error('Empty response from server');
+    const start=text.indexOf('{')!==-1?text.indexOf('{'):text.indexOf('[');
+    if(start===-1) throw new Error('No JSON in response: '+text.substring(0,100));
+    return JSON.parse(text.substring(start));
+  }catch(e){
+    console.error('apiCall ['+action+'] error:',e.message);
+    return{success:false,error:e.message};
   }
 }
 
@@ -608,25 +622,21 @@ async function apiCall(action, data={}){
    LOGIN
 ══════════════════════════════ */
 async function doLogin(){
-  const empCode = document.getElementById('loginEmpCode').value.trim();
-  const password = document.getElementById('loginPassword').value;
+  const empCode=document.getElementById('loginEmpCode').value.trim();
+  const password=document.getElementById('loginPassword').value;
   if(!empCode||!password){showToast('⚠️ Enter employee code and password');return}
   showLoading('Verifying credentials…');
-  const res = await apiCall('login',{empCode,password});
+  const res=await apiCall('login',{empCode,password});
   hideLoading();
   if(res.success){
-    currentUser = {empCode, name:res.name, branch:res.branch, firstLogin:res.firstLogin};
-    localStorage.setItem('ss_user', JSON.stringify({empCode,branch:res.branch,name:res.name}));
-    if(res.firstLogin){
-      showPage('page-changepass');
-    } else {
-      enterApp();
-    }
-  } else {
+    currentUser={empCode,name:res.name,branch:res.branch,firstLogin:res.firstLogin};
+    localStorage.setItem('ss_user',JSON.stringify({empCode,branch:res.branch,name:res.name}));
+    if(res.firstLogin){showPage('page-changepass');}
+    else{enterApp();}
+  }else{
     showToast('❌ '+(res.error||'Invalid credentials'));
   }
 }
-
 document.getElementById('loginPassword').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
 document.getElementById('loginEmpCode').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('loginPassword').focus()});
 
@@ -654,13 +664,13 @@ async function doChangePassword(){
   if(n.length<6){showToast('❌ Min 6 characters required');return}
   if(n!==c){showToast('❌ Passwords do not match');return}
   showLoading('Updating password…');
-  const res = await apiCall('changePassword',{empCode:currentUser.empCode,oldPassword:cur,newPassword:n});
+  const res=await apiCall('changePassword',{empCode:currentUser.empCode,oldPassword:cur,newPassword:n});
   hideLoading();
   if(res.success){
     showToast('✅ Password changed!');
     currentUser.firstLogin=false;
     enterApp();
-  } else {
+  }else{
     showToast('❌ '+(res.error||'Error changing password'));
   }
 }
@@ -686,20 +696,14 @@ async function enterApp(){
    ATTENDANCE
 ══════════════════════════════ */
 async function checkAttendanceStatus(){
-  const res = await apiCall('getAttendance',{empCode:currentUser.empCode,date:getToday()});
-  if(res.success && res.status){
-    showAttendanceDone(res.status);
-  } else {
-    checkAttReminderTime();
-  }
+  const res=await apiCall('getAttendance',{empCode:currentUser.empCode,date:getToday()});
+  if(res.success&&res.status){showAttendanceDone(res.status);}
+  else{checkAttReminderTime();}
 }
 
 function checkAttReminderTime(){
   const h=new Date().getHours();
-  const m=new Date().getMinutes();
-  if(h>=10||(h===10&&m>=0)){
-    document.getElementById('attReminderBanner').style.display='flex';
-  }
+  if(h>=10) document.getElementById('attReminderBanner').style.display='flex';
 }
 
 function showAttendanceDone(status){
@@ -709,7 +713,7 @@ function showAttendanceDone(status){
     document.getElementById('attStatusEmoji').textContent='✅';
     document.getElementById('attStatusText').textContent='Attendance Marked: Present';
     document.getElementById('attStatusSub').textContent='You are marked Present today. Please submit your service report.';
-  } else {
+  }else{
     document.getElementById('attStatusEmoji').textContent='❌';
     document.getElementById('attStatusText').textContent='Attendance Marked: Absent';
     document.getElementById('attStatusSub').textContent='You are marked Absent for today.';
@@ -721,37 +725,23 @@ function selectAtt(status){
   selectedAtt=status;
   document.getElementById('btnPresent').classList.remove('selected','present');
   document.getElementById('btnAbsent').classList.remove('selected','absent');
-  if(status==='Present'){
-    document.getElementById('btnPresent').classList.add('selected','present');
-  } else {
-    document.getElementById('btnAbsent').classList.add('selected','absent');
-  }
+  if(status==='Present'){document.getElementById('btnPresent').classList.add('selected','present');}
+  else{document.getElementById('btnAbsent').classList.add('selected','absent');}
   document.getElementById('btnSubmitAtt').disabled=false;
 }
 
 async function submitAttendance(){
   if(!selectedAtt){showToast('⚠️ Select Present or Absent');return}
-  showConfirm(
-    'Mark Attendance',
-    `Confirm marking yourself as ${selectedAtt} for ${formatDateDisplay(getToday())}?`,
-    async()=>{
-      showLoading('Saving attendance…');
-      const res = await apiCall('markAttendance',{
-        empCode:currentUser.empCode,
-        branch:currentUser.branch,
-        name:currentUser.name,
-        status:selectedAtt,
-        date:getToday()
-      });
-      hideLoading();
-      if(res.success){
-        showToast('✅ Attendance saved!');
-        showAttendanceDone(selectedAtt);
-      } else {
-        showToast('❌ '+(res.error||'Error saving attendance'));
-      }
-    }
-  );
+  showConfirm('Mark Attendance',`Confirm marking yourself as ${selectedAtt} for ${formatDateDisplay(getToday())}?`,async()=>{
+    showLoading('Saving attendance…');
+    const res=await apiCall('markAttendance',{
+      empCode:currentUser.empCode,branch:currentUser.branch,
+      name:currentUser.name,status:selectedAtt,date:getToday()
+    });
+    hideLoading();
+    if(res.success){showToast('✅ Attendance saved!');showAttendanceDone(selectedAtt);}
+    else{showToast('❌ '+(res.error||'Error saving attendance'));}
+  });
 }
 
 /* ══════════════════════════════
@@ -775,7 +765,7 @@ function buildReportForm(){
       <span class="param-wt ${p.wt===2?'wt2':''}">wt:${p.wt}</span>
       <div class="param-controls">
         <button class="count-btn minus" onclick="adjustCount('${p.id}',-1)">−</button>
-        <input class="count-input" type="number" id="inp-${p.id}" value="0" min="0" 
+        <input class="count-input" type="number" id="inp-${p.id}" value="0" min="0"
           oninput="onParamInput('${p.id}')" onchange="onParamInput('${p.id}')">
         <button class="count-btn plus" onclick="adjustCount('${p.id}',1)">+</button>
       </div>
@@ -791,26 +781,21 @@ function adjustCount(id,delta){
   onParamInput(id);
 }
 
-function onParamInput(id){
-  updateGap(id);
-  updateLiveScore();
-}
+function onParamInput(id){updateGap(id);updateLiveScore();}
 
 function updateGap(id){
   const val=parseInt(document.getElementById('inp-'+id).value)||0;
   const budget=budgetData[id]||0;
   const gap=Math.max(0,budget-val);
   const gapEl=document.getElementById('gap-'+id);
-  const row=document.getElementById('row-'+id);
   gapEl.textContent=gap>0?gap:'✓';
   gapEl.className='gap-badge'+(gap===0?' met':'');
   document.getElementById('gap-label-'+id).textContent='Gap: '+gap;
-  row.style.background=(val===0&&budget>0)?'rgba(231,76,60,0.04)':'';
+  document.getElementById('row-'+id).style.background=(val===0&&budget>0)?'rgba(231,76,60,0.04)':'';
 }
 
 function updateLiveScore(){
-  let score=0;
-  let missed=0;
+  let score=0,missed=0;
   PARAMS.forEach(p=>{
     const v=parseInt(document.getElementById('inp-'+p.id)?.value)||0;
     score+=v*p.wt;
@@ -831,8 +816,8 @@ function clearReport(){
 }
 
 async function loadBudgetData(){
-  const res = await apiCall('getBudget',{branch:currentUser.branch,month:getToday().substring(0,7)});
-  if(res.success && res.budget){
+  const res=await apiCall('getBudget',{branch:currentUser.branch,month:getToday().substring(0,7)});
+  if(res.success&&res.budget){
     budgetData=res.budget;
     buildReportForm();
     updateLiveScore();
@@ -840,18 +825,16 @@ async function loadBudgetData(){
 }
 
 async function goToServiceReport(){
-  // Check if present today
-  const attRes = await apiCall('getAttendance',{empCode:currentUser.empCode,date:getToday()});
+  const attRes=await apiCall('getAttendance',{empCode:currentUser.empCode,date:getToday()});
   if(!attRes.success||attRes.status!=='Present'){
     showToast('⚠️ You must be marked Present to submit a report');return;
   }
-  // Check if report already submitted
-  const repRes = await apiCall('getReport',{empCode:currentUser.empCode,date:getToday()});
-  if(repRes.success && repRes.submitted){
+  const repRes=await apiCall('getReport',{empCode:currentUser.empCode,date:getToday()});
+  if(repRes.success&&repRes.submitted){
     document.getElementById('reportAlreadyDone').style.display='block';
     document.getElementById('reportForm').style.display='none';
     document.getElementById('reportDoneScore').textContent=repRes.score||'—';
-  } else {
+  }else{
     document.getElementById('reportAlreadyDone').style.display='none';
     document.getElementById('reportForm').style.display='block';
   }
@@ -861,62 +844,92 @@ async function goToServiceReport(){
 async function submitReport(){
   const values={};
   let score=0;
-  const missed=[];
   PARAMS.forEach(p=>{
     const v=parseInt(document.getElementById('inp-'+p.id)?.value)||0;
     values[p.id]=v;
     score+=v*p.wt;
-    if(v===0)missed.push(p.name);
   });
 
   showConfirm('Submit Report',`Submit service report with score ${score}?`,async()=>{
     showLoading('Submitting report…');
     const res=await apiCall('submitReport',{
-      empCode:currentUser.empCode,
-      branch:currentUser.branch,
-      name:currentUser.name,
-      date:getToday(),
-      values,score
+      empCode:currentUser.empCode,branch:currentUser.branch,
+      name:currentUser.name,date:getToday(),values,score
     });
     hideLoading();
     if(res.success){
       showToast('✅ Report submitted!');
-      const waMsg=buildWaMessage(score,missed,values);
+      const waMsg=buildWaMessage(score,values);
       waTextContent=waMsg;
+      // Show in bubble (preserve newlines)
       document.getElementById('waText').textContent=waMsg;
       document.getElementById('waModal').classList.add('active');
-    } else {
+    }else{
       showToast('❌ '+(res.error||'Error submitting report'));
     }
   });
 }
 
-function buildWaMessage(score,missed,values){
-  const today=formatDateDisplay(getToday());
-  let msg=`📊 *Seva Sarathi – Daily Report*\n`;
-  msg+=`📍 Branch: ${currentUser.branch}\n`;
-  msg+=`👤 Name: ${currentUser.name}\n`;
-  msg+=`📅 Date: ${today}\n`;
-  msg+=`⭐ Score (YS): *${score}*\n\n`;
-  msg+=`📋 *Service Details:*\n`;
-  PARAMS.forEach(p=>{
-    const v=values[p.id]||0;
-    msg+=`• ${p.name}: ${v}\n`;
+/* ══════════════════════════════════════════════════
+   BUILD WHATSAPP MESSAGE
+   Format matches the official Seva Sarathi template.
+══════════════════════════════════════════════════ */
+function buildWaMessage(score, values){
+  const totalParams = PARAMS.length;
+  // YS = number of params with value > 0
+  const doneCount = PARAMS.filter(p => (values[p.id] || 0) > 0).length;
+  const dateStr   = formatDateWA(getToday());  // DD.MM.YYYY
+  // First name only for compact display
+  const firstName = currentUser.name.split(' ')[0];
+
+  const SEP = '━━━━━━━━━━━━━━━━━━━━━━━━';
+
+  let msg = `🙏 *SEVA SARATHI REPORT*\n`;
+  msg    += `${SEP}\n`;
+  msg    += ` \n`;
+  msg    += `📝 Reported by: ${currentUser.name}\n`;
+  msg    += `Branch: ${currentUser.branch}\n`;
+  msg    += `📅 Date: ${dateStr}\n`;
+  msg    += `🏆 YS: ${doneCount}/${totalParams}\n`;
+
+  // ── Category sections (only if at least one param > 0) ──
+  WA_CATEGORIES.forEach(cat => {
+    const lines = [];
+    cat.params.forEach(pid => {
+      const val = values[pid] || 0;
+      if(val > 0){
+        lines.push(`   • ${PARAM_MAP[pid].name}: ${val}`);
+      }
+    });
+    if(lines.length > 0){
+      msg += ` \n`;
+      msg += `${cat.icon} *${cat.name}*\n`;
+      msg += lines.join('\n') + '\n';
+    }
   });
-  if(missed.length>0){
-    msg+=`\n⚠️ *I missed these:*\n`;
-    missed.forEach((m,i)=>msg+=`${i+1}. ${m}\n`);
+
+  // ── Missed parameters ──
+  const missed = PARAMS.filter(p => (values[p.id] || 0) === 0).map(p => p.name);
+  if(missed.length > 0){
+    msg += `I missed these:\n`;
+    missed.forEach((m, i) => { msg += `${i + 1}. ${m}\n`; });
   }
-  msg+=`\n_Submitted via Seva Sarathi App_`;
-  return msg;
+
+  return msg.trimEnd();
 }
 
+/* ══════════════════════════════
+   WA MODAL HELPERS
+══════════════════════════════ */
 function copyWaText(){
-  navigator.clipboard.writeText(waTextContent).then(()=>showToast('📋 Copied!')).catch(()=>{
-    const el=document.createElement('textarea');
-    el.value=waTextContent;document.body.appendChild(el);el.select();
-    document.execCommand('copy');document.body.removeChild(el);showToast('📋 Copied!');
-  });
+  navigator.clipboard.writeText(waTextContent)
+    .then(()=>showToast('📋 Copied!'))
+    .catch(()=>{
+      const el=document.createElement('textarea');
+      el.value=waTextContent;document.body.appendChild(el);el.select();
+      document.execCommand('copy');document.body.removeChild(el);
+      showToast('📋 Copied!');
+    });
 }
 
 function openWhatsApp(){
@@ -940,7 +953,7 @@ function showConfirm(title,msg,cb){
 }
 function closeConfirm(ok){
   document.getElementById('confirmModal').classList.remove('active');
-  if(ok && confirmCallback)confirmCallback();
+  if(ok&&confirmCallback)confirmCallback();
   confirmCallback=null;
 }
 
@@ -956,12 +969,11 @@ function scheduleBrowserReminders(){
     }
   });
 }
-
 function scheduleNotif(targetH,targetM,title,body){
   const now=new Date();
   const target=new Date();
   target.setHours(targetH,targetM,0,0);
-  if(target<=now) return; // already passed
+  if(target<=now)return;
   const delay=target-now;
   setTimeout(()=>new Notification(title,{body,icon:'/favicon.ico'}),delay);
 }
@@ -970,29 +982,23 @@ function scheduleNotif(targetH,targetM,title,body){
    CONNECTION TEST
 ══════════════════════════════ */
 async function testConnection(){
-  const el = document.getElementById('connStatus');
-  if(!el) return;
+  const el=document.getElementById('connStatus');
+  if(!el)return;
   if(SCRIPT_URL.includes('YOUR_SCRIPT_ID')){
     el.style.display='flex';
-    el.style.background='#fff3e0'; el.style.color='#e65100';
-    el.style.border='1px solid #ffcc80';
-    el.innerHTML='⚙️ Script URL not set. Update SCRIPT_URL in the HTML file.';
-    return;
+    el.style.cssText='display:flex;background:#fff3e0;color:#e65100;border:1px solid #ffcc80;padding:10px 14px;border-radius:10px;font-size:13px;font-weight:600;margin-bottom:14px;';
+    el.textContent='⚙️ Script URL not set.';return;
   }
-  el.style.display='flex';
-  el.style.background='#e3f2fd'; el.style.color='#1565c0';
-  el.style.border='1px solid #90caf9';
-  el.innerHTML='🔌 Checking connection to server…';
-  const res = await apiCall('ping',{});
+  el.style.cssText='display:flex;background:#e3f2fd;color:#1565c0;border:1px solid #90caf9;padding:10px 14px;border-radius:10px;font-size:13px;font-weight:600;margin-bottom:14px;';
+  el.textContent='🔌 Checking connection…';
+  const res=await apiCall('ping',{});
   if(res.success){
-    el.style.background='#e8f5e9'; el.style.color='#1b5e20';
-    el.style.border='1px solid #a5d6a7';
-    el.innerHTML='🟢 Connected to server';
-    setTimeout(()=>{ el.style.display='none'; }, 3000);
-  } else {
-    el.style.background='#fce4ec'; el.style.color='#880e4f';
-    el.style.border='1px solid #f48fb1';
-    el.innerHTML='🔴 Cannot reach server. Check SCRIPT_URL or deploy status. Error: '+(res.error||'unknown');
+    el.style.cssText='display:flex;background:#e8f5e9;color:#1b5e20;border:1px solid #a5d6a7;padding:10px 14px;border-radius:10px;font-size:13px;font-weight:600;margin-bottom:14px;';
+    el.textContent='🟢 Connected to server';
+    setTimeout(()=>{el.style.display='none';},3000);
+  }else{
+    el.style.cssText='display:flex;background:#fce4ec;color:#880e4f;border:1px solid #f48fb1;padding:10px 14px;border-radius:10px;font-size:13px;font-weight:600;margin-bottom:14px;';
+    el.textContent='🔴 Cannot reach server: '+(res.error||'unknown');
   }
 }
 
@@ -1012,9 +1018,7 @@ function doLogout(){
    AUTO-LOGIN CHECK
 ══════════════════════════════ */
 (async function init(){
-  // Test connection first, show on login page
   testConnection();
-
   const saved=localStorage.getItem('ss_user');
   if(saved){
     try{
@@ -1024,10 +1028,9 @@ function doLogout(){
       hideLoading();
       if(res.success){
         currentUser={empCode:u.empCode,name:res.name||u.name,branch:res.branch||u.branch,firstLogin:false};
-        enterApp();
-        return;
+        enterApp();return;
       }
-    }catch(e){ console.error('Session restore error:', e); }
+    }catch(e){console.error('Session restore error:',e);}
     hideLoading();
   }
   showPage('page-login');
