@@ -29,14 +29,12 @@ body{font-family:'Noto Sans',sans-serif;background:var(--bg);color:var(--text);m
 .sidebar-logo p{font-size:11px;color:rgba(255,255,255,0.55);margin-top:2px}
 .sidebar-badge{background:var(--accent);color:var(--primary);font-size:10px;font-weight:700;
   padding:2px 8px;border-radius:10px;margin-left:8px}
-
 .nav-items{flex:1;padding:16px 12px;overflow-y:auto}
 .nav-item{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:10px;
   color:rgba(255,255,255,0.7);cursor:pointer;transition:all .2s;margin-bottom:4px;font-size:14px}
 .nav-item:hover{background:rgba(255,255,255,0.1);color:#fff}
 .nav-item.active{background:rgba(245,166,35,0.25);color:var(--accent);font-weight:600}
 .nav-item .ni-icon{font-size:18px;flex-shrink:0}
-
 .sidebar-footer{padding:16px;border-top:1px solid rgba(255,255,255,0.1);
   font-size:11px;color:rgba(255,255,255,0.4);text-align:center}
 
@@ -50,7 +48,6 @@ body{font-family:'Noto Sans',sans-serif;background:var(--bg);color:var(--text);m
   padding:4px 12px;border-radius:20px;display:flex;align-items:center;gap:6px}
 .badge-live::before{content:'';width:8px;height:8px;background:var(--success);
   border-radius:50%;animation:pulse 1.5s ease infinite}
-
 .content{flex:1;padding:24px 28px}
 
 /* ── CARDS ── */
@@ -113,11 +110,13 @@ tbody tr:nth-child(even):hover{background:#f7f9fc}
 .btn-success{background:linear-gradient(135deg,var(--success),#2ecc71);color:#fff}
 .btn-danger{background:linear-gradient(135deg,var(--danger),#c0392b);color:#fff}
 .btn-warning{background:linear-gradient(135deg,var(--warning),#e67e22);color:#fff}
+.btn-wa{background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;
+  box-shadow:0 4px 12px rgba(37,211,102,0.3)}
+.btn-wa:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(37,211,102,0.4)}
 .btn-outline{background:transparent;border:2px solid var(--primary-mid);color:var(--primary-mid)}
 .btn-outline:hover{background:var(--primary-mid);color:#fff}
 .btn-sm{padding:7px 14px;font-size:12.5px;border-radius:8px}
 .btn-icon{padding:8px;border-radius:8px}
-
 .btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
 
 /* ── TABS ── */
@@ -129,7 +128,7 @@ tbody tr:nth-child(even):hover{background:#f7f9fc}
 .tab-btn.active{background:var(--card);color:var(--primary);font-weight:700;
   box-shadow:0 2px 8px rgba(0,0,0,0.1)}
 
-/* ── SECTIONS (pages) ── */
+/* ── SECTIONS ── */
 .section-page{display:none}
 .section-page.active{display:block}
 
@@ -140,8 +139,7 @@ tbody tr:nth-child(even):hover{background:#f7f9fc}
 .date-picker-row input[type=date]:focus{outline:none;border-color:var(--primary-mid)}
 
 /* ── EFFICIENCY CARDS ── */
-.eff-card{background:var(--card);border-radius:14px;padding:18px;box-shadow:var(--shadow);
-  margin-bottom:16px}
+.eff-card{background:var(--card);border-radius:14px;padding:18px;box-shadow:var(--shadow);margin-bottom:16px}
 .eff-user-header{display:flex;align-items:center;gap:12px;margin-bottom:14px}
 .eff-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--primary-mid),var(--primary-light));
   color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Rajdhani',sans-serif;
@@ -151,23 +149,20 @@ tbody tr:nth-child(even):hover{background:#f7f9fc}
 .eff-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
 .eff-bar-label{font-size:12px;color:var(--muted);width:140px;flex-shrink:0}
 .eff-bar-track{flex:1;height:8px;background:var(--bg);border-radius:4px;overflow:hidden}
-.eff-bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--primary-mid),var(--accent));
-  transition:width .4s ease}
+.eff-bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--primary-mid),var(--accent));transition:width .4s ease}
 .eff-score-badge{font-weight:700;font-size:13px;color:var(--primary-mid);min-width:36px;text-align:right}
 .suggestion-box{background:#e3f2fd;border-left:4px solid var(--primary-mid);
-  border-radius:0 8px 8px 0;padding:10px 14px;font-size:12.5px;color:#1565c0;
-  margin-top:10px;line-height:1.6}
+  border-radius:0 8px 8px 0;padding:10px 14px;font-size:12.5px;color:#1565c0;margin-top:10px;line-height:1.6}
 
 /* ── GRID ── */
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 @media(max-width:600px){.grid-2{grid-template-columns:1fr}}
 
-/* ── HOLIDAY LIST ── */
+/* ── HOLIDAY ── */
 .holiday-chip{display:inline-flex;align-items:center;gap:6px;background:#fff3e0;
   border:1px solid #ffe082;color:#e65100;padding:5px 12px;border-radius:20px;
   font-size:12.5px;margin:4px;font-weight:500}
-.holiday-chip button{background:none;border:none;cursor:pointer;color:#c62828;font-size:14px;
-  line-height:1;padding:0}
+.holiday-chip button{background:none;border:none;cursor:pointer;color:#c62828;font-size:14px;line-height:1;padding:0}
 
 /* ── ANIMATIONS ── */
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
@@ -191,7 +186,7 @@ tbody tr:nth-child(even):hover{background:#f7f9fc}
 .loading-overlay.active{display:flex}
 .loading-overlay p{color:var(--primary);font-weight:600}
 
-/* Mobile sidebar toggle */
+/* Mobile */
 .hamburger{display:none;background:none;border:none;font-size:24px;cursor:pointer;padding:4px}
 @media(max-width:768px){
   .sidebar{transform:translateX(-100%);transition:transform .3s ease}
@@ -202,19 +197,32 @@ tbody tr:nth-child(even):hover{background:#f7f9fc}
   .topbar{padding:14px 16px}
 }
 
-/* Upload zone */
-.upload-zone{border:2px dashed var(--border);border-radius:12px;padding:24px;text-align:center;
-  cursor:pointer;transition:all .2s;background:#fafbfc}
-.upload-zone:hover{border-color:var(--primary-mid);background:#e8eef8}
-.upload-zone input{display:none}
-.upload-zone p{color:var(--muted);font-size:13.5px;margin-top:8px}
-
 .progress-bar{height:6px;background:var(--bg);border-radius:3px;margin-top:8px;overflow:hidden}
-.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary-mid),var(--accent));
-  border-radius:3px;transition:width .3s}
-
-/* PNG export canvas */
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary-mid),var(--accent));border-radius:3px;transition:width .3s}
 #exportCanvas{display:none}
+
+/* ── WHATSAPP MODAL ── */
+.wa-modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.55);
+  z-index:1100;display:none;align-items:center;justify-content:center;padding:20px}
+.wa-modal-overlay.active{display:flex}
+.wa-modal{background:#fff;border-radius:20px;padding:0;max-width:480px;width:100%;
+  box-shadow:0 24px 80px rgba(0,0,0,0.3);overflow:hidden;max-height:90vh;display:flex;flex-direction:column}
+.wa-modal-header{background:linear-gradient(135deg,#25D366,#128C7E);padding:18px 22px;
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.wa-modal-header h3{color:#fff;font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;
+  display:flex;align-items:center;gap:8px}
+.wa-modal-close{background:rgba(255,255,255,0.2);border:none;color:#fff;width:30px;height:30px;
+  border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+.wa-modal-body{padding:20px;overflow-y:auto;flex:1}
+.wa-preview{background:#e5ddd5;border-radius:12px;padding:14px;font-family:'Courier New',monospace;
+  font-size:13px;line-height:1.7;white-space:pre-wrap;color:#111;max-height:420px;overflow-y:auto;
+  border:1px solid #ccc}
+.wa-bubble{background:#fff;border-radius:0 12px 12px 12px;padding:12px 14px;display:inline-block;
+  max-width:100%;box-shadow:0 1px 3px rgba(0,0,0,0.15)}
+.wa-modal-footer{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:10px;flex-shrink:0}
+
+/* Param header tooltip */
+th[title]{cursor:help;border-bottom:2px dotted rgba(255,255,255,0.5)}
 </style>
 </head>
 <body>
@@ -226,6 +234,24 @@ tbody tr:nth-child(even):hover{background:#f7f9fc}
 <div id="toast"></div>
 <canvas id="exportCanvas"></canvas>
 
+<!-- ════════ WHATSAPP MESSAGE MODAL ════════ -->
+<div class="wa-modal-overlay" id="waModal">
+  <div class="wa-modal">
+    <div class="wa-modal-header">
+      <h3>💬 WhatsApp Report Preview</h3>
+      <button class="wa-modal-close" onclick="closeWaModal()">✕</button>
+    </div>
+    <div class="wa-modal-body">
+      <p style="font-size:12px;color:var(--muted);margin-bottom:10px">Preview of the WhatsApp-formatted report message:</p>
+      <div class="wa-preview"><div class="wa-bubble" id="waPreviewText"></div></div>
+    </div>
+    <div class="wa-modal-footer">
+      <button class="btn btn-wa btn-sm" onclick="copyWaMessage()">📋 Copy Message</button>
+      <button class="btn btn-outline btn-sm" onclick="closeWaModal()">Close</button>
+    </div>
+  </div>
+</div>
+
 <!-- ════════ SIDEBAR ════════ -->
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-logo">
@@ -234,30 +260,14 @@ tbody tr:nth-child(even):hover{background:#f7f9fc}
     <p>Admin Portal <span class="sidebar-badge">ADMIN</span></p>
   </div>
   <div class="nav-items">
-    <div class="nav-item active" onclick="goSection('dash')">
-      <span class="ni-icon">🏠</span> Dashboard
-    </div>
-    <div class="nav-item" onclick="goSection('attendance')">
-      <span class="ni-icon">✅</span> Attendance
-    </div>
-    <div class="nav-item" onclick="goSection('reports')">
-      <span class="ni-icon">📊</span> Service Reports
-    </div>
-    <div class="nav-item" onclick="goSection('master')">
-      <span class="ni-icon">👥</span> Master Data
-    </div>
-    <div class="nav-item" onclick="goSection('budget')">
-      <span class="ni-icon">🎯</span> Budget
-    </div>
-    <div class="nav-item" onclick="goSection('holidays')">
-      <span class="ni-icon">📅</span> Holidays
-    </div>
-    <div class="nav-item" onclick="goSection('efficiency')">
-      <span class="ni-icon">📈</span> Efficiency
-    </div>
-    <div class="nav-item" onclick="goSection('users')">
-      <span class="ni-icon">🔑</span> User Mgmt
-    </div>
+    <div class="nav-item active" onclick="goSection('dash')"><span class="ni-icon">🏠</span> Dashboard</div>
+    <div class="nav-item" onclick="goSection('attendance')"><span class="ni-icon">✅</span> Attendance</div>
+    <div class="nav-item" onclick="goSection('reports')"><span class="ni-icon">📊</span> Service Reports</div>
+    <div class="nav-item" onclick="goSection('master')"><span class="ni-icon">👥</span> Master Data</div>
+    <div class="nav-item" onclick="goSection('budget')"><span class="ni-icon">🎯</span> Budget</div>
+    <div class="nav-item" onclick="goSection('holidays')"><span class="ni-icon">📅</span> Holidays</div>
+    <div class="nav-item" onclick="goSection('efficiency')"><span class="ni-icon">📈</span> Efficiency</div>
+    <div class="nav-item" onclick="goSection('users')"><span class="ni-icon">🔑</span> User Mgmt</div>
   </div>
   <div class="sidebar-footer">Malappuram Region <br>Admin v1.0</div>
 </nav>
@@ -281,22 +291,10 @@ tbody tr:nth-child(even):hover{background:#f7f9fc}
     <!-- ═══ DASHBOARD ═══ -->
     <div class="section-page active fade-in" id="sec-dash">
       <div class="stat-grid" id="dashStats">
-        <div class="stat-card sc-green">
-          <div class="stat-val" id="statPresent">—</div>
-          <div class="stat-label">Present Today</div>
-        </div>
-        <div class="stat-card sc-red">
-          <div class="stat-val" id="statAbsent">—</div>
-          <div class="stat-label">Absent Today</div>
-        </div>
-        <div class="stat-card sc-orange">
-          <div class="stat-val" id="statNotReported">—</div>
-          <div class="stat-label">Not Reported</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-val" id="statSubmitted">—</div>
-          <div class="stat-label">Reports Submitted</div>
-        </div>
+        <div class="stat-card sc-green"><div class="stat-val" id="statPresent">—</div><div class="stat-label">Present Today</div></div>
+        <div class="stat-card sc-red"><div class="stat-val" id="statAbsent">—</div><div class="stat-label">Absent Today</div></div>
+        <div class="stat-card sc-orange"><div class="stat-val" id="statNotReported">—</div><div class="stat-label">Not Reported</div></div>
+        <div class="stat-card"><div class="stat-val" id="statSubmitted">—</div><div class="stat-label">Reports Submitted</div></div>
       </div>
       <div class="card">
         <div class="card-title"><div class="ct-left"><span class="ct-icon">📊</span> Today's Overview</div>
@@ -360,19 +358,10 @@ tbody tr:nth-child(even):hover{background:#f7f9fc}
         <div id="addBranchForm" style="display:none;margin-bottom:16px">
           <div class="card" style="background:#f7f9fc;box-shadow:none;padding:16px;border:1px solid var(--border)">
             <div class="grid-2">
-              <div class="form-group">
-                <label>Branch Name</label>
-                <input type="text" id="newBranch" placeholder="Branch name">
-              </div>
-              <div class="form-group">
-                <label>Seva Sarathi Name</label>
-                <input type="text" id="newSSName" placeholder="Employee name">
-              </div>
+              <div class="form-group"><label>Branch Name</label><input type="text" id="newBranch" placeholder="Branch name"></div>
+              <div class="form-group"><label>Seva Sarathi Name</label><input type="text" id="newSSName" placeholder="Employee name"></div>
             </div>
-            <div class="form-group">
-              <label>Employee Code</label>
-              <input type="text" id="newEmpCode" placeholder="Employee code">
-            </div>
+            <div class="form-group"><label>Employee Code</label><input type="text" id="newEmpCode" placeholder="Employee code"></div>
             <div style="display:flex;gap:8px">
               <button class="btn btn-success btn-sm" onclick="addBranch()">Save</button>
               <button class="btn btn-outline btn-sm" onclick="document.getElementById('addBranchForm').style.display='none'">Cancel</button>
@@ -399,11 +388,7 @@ tbody tr:nth-child(even):hover{background:#f7f9fc}
           <label>Month</label>
           <input type="month" id="budgetMonth" style="width:auto" onchange="loadBudgetAdmin()">
         </div>
-        <div id="budgetTableWrap">
-          <p style="color:var(--muted);font-size:13px;text-align:center;padding:20px">
-            Select a month to view/edit budget
-          </p>
-        </div>
+        <div id="budgetTableWrap"><p style="color:var(--muted);font-size:13px;text-align:center;padding:20px">Select a month to view/edit budget</p></div>
         <div id="budgetFormWrap" style="display:none">
           <button class="btn btn-success btn-sm" onclick="saveBudget()" style="margin-top:14px">💾 Save Budget</button>
         </div>
@@ -416,14 +401,8 @@ tbody tr:nth-child(even):hover{background:#f7f9fc}
         <div class="card-title"><div class="ct-left"><span class="ct-icon">📅</span> Holiday Management</div></div>
         <div class="grid-2" style="margin-bottom:16px">
           <div>
-            <div class="form-group">
-              <label>Add Holiday Date</label>
-              <input type="date" id="newHolidayDate">
-            </div>
-            <div class="form-group">
-              <label>Description</label>
-              <input type="text" id="newHolidayDesc" placeholder="e.g., Onam Holiday">
-            </div>
+            <div class="form-group"><label>Add Holiday Date</label><input type="date" id="newHolidayDate"></div>
+            <div class="form-group"><label>Description</label><input type="text" id="newHolidayDesc" placeholder="e.g., Onam Holiday"></div>
             <button class="btn btn-primary btn-sm" onclick="addHoliday()">➕ Add Holiday</button>
           </div>
           <div>
@@ -473,22 +452,17 @@ tbody tr:nth-child(even):hover{background:#f7f9fc}
       </div>
     </div>
 
-  </div><!-- /content -->
-</div><!-- /main -->
+  </div>
+</div>
 
 <!-- RESET PASSWORD MODAL -->
 <div id="resetPwdModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;
   background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center;padding:20px">
   <div style="background:#fff;border-radius:16px;padding:24px;max-width:380px;width:100%;
     box-shadow:0 20px 60px rgba(0,0,0,0.25)">
-    <h3 style="font-family:'Rajdhani',sans-serif;font-size:18px;color:var(--primary);margin-bottom:12px">
-      Reset Password
-    </h3>
+    <h3 style="font-family:'Rajdhani',sans-serif;font-size:18px;color:var(--primary);margin-bottom:12px">Reset Password</h3>
     <p id="resetPwdUser" style="font-size:13px;color:var(--muted);margin-bottom:14px"></p>
-    <div class="form-group">
-      <label>New Password</label>
-      <input type="text" id="resetPwdInput" value="Sbi@1234" placeholder="New password">
-    </div>
+    <div class="form-group"><label>New Password</label><input type="text" id="resetPwdInput" value="Sbi@1234" placeholder="New password"></div>
     <div style="display:flex;gap:10px">
       <button class="btn btn-primary btn-sm" onclick="confirmResetPwd()">Reset</button>
       <button class="btn btn-outline btn-sm" onclick="document.getElementById('resetPwdModal').style.display='none'">Cancel</button>
@@ -499,29 +473,68 @@ tbody tr:nth-child(even):hover{background:#f7f9fc}
 <script>
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbywT5rCTUhBT8xdT3Q16DK31TxRDYgfxdLVo4knUMRulIm_GZjncmGYwZ3tB7OD92Qr/exec';
 
+// ── PARAMS: added `short` for table column header display ──
 const PARAMS = [
-  {id:'p1',name:'YONO Registration',channel:'yono',wt:2},
-  {id:'p2',name:'WhatsApp Banking Reg',channel:'wb',wt:2},
-  {id:'p3',name:'CBDC Registration',channel:'other',wt:2},
-  {id:'p4',name:'YONO Cash (Withdrawal & Deposit)',channel:'yono',wt:1},
-  {id:'p5',name:'CDM/GCC Deposit',channel:'other',wt:1},
-  {id:'p6',name:'Feedbacks',channel:'other',wt:1},
-  {id:'p7',name:'APY Done',channel:'other',wt:1},
-  {id:'p8',name:'Term Deposit (YONO)',channel:'yono',wt:1},
-  {id:'p9',name:'PAI Done (YONO)',channel:'yono',wt:1},
-  {id:'p10',name:'ATM Card Issue (YONO/Toll Free)',channel:'tf',wt:1},
-  {id:'p11',name:'Cheque Book Issue',channel:'yono',wt:1},
-  {id:'p12',name:'Form 15G/H',channel:'yono',wt:1},
-  {id:'p13',name:'KYC Update',channel:'yono',wt:1},
-  {id:'p14',name:'Nominee Update (YONO)',channel:'yono',wt:1},
-  {id:'p15',name:'Transfer Done (YONO)',channel:'yono',wt:1},
-  {id:'p16',name:'Statement & Enquiry',channel:'tf',wt:1}
+  {id:'p1', name:'YONO Registration',                  short:'YONO Reg',   channel:'yono', wt:2},
+  {id:'p2', name:'WhatsApp Banking Reg',                short:'WA Reg',     channel:'wb',   wt:2},
+  {id:'p3', name:'CBDC Registration',                   short:'CBDC',       channel:'other',wt:2},
+  {id:'p4', name:'YONO Cash (Withdrawal & Deposit)',    short:'YONO Cash',  channel:'yono', wt:1},
+  {id:'p5', name:'CDM/GCC Deposit',                     short:'CDM/GCC',    channel:'other',wt:1},
+  {id:'p6', name:'Feedbacks',                           short:'Feedback',   channel:'other',wt:1},
+  {id:'p7', name:'APY Done',                            short:'APY',        channel:'other',wt:1},
+  {id:'p8', name:'Term Deposit (YONO)',                 short:'Term Dep',   channel:'yono', wt:1},
+  {id:'p9', name:'PAI Done (YONO)',                     short:'PAI',        channel:'yono', wt:1},
+  {id:'p10',name:'ATM Card Issue (YONO/Toll Free)',     short:'ATM Card',   channel:'tf',   wt:1},
+  {id:'p11',name:'Cheque Book Issue',                   short:'Chq Book',   channel:'yono', wt:1},
+  {id:'p12',name:'Form 15G/H',                          short:'15G/H',      channel:'yono', wt:1},
+  {id:'p13',name:'KYC Update',                          short:'KYC',        channel:'yono', wt:1},
+  {id:'p14',name:'Nominee Update (YONO)',                short:'Nominee',    channel:'yono', wt:1},
+  {id:'p15',name:'Transfer Done (YONO)',                 short:'Transfer',   channel:'yono', wt:1},
+  {id:'p16',name:'Statement & Enquiry',                  short:'Stmt/Enq',   channel:'tf',   wt:1}
 ];
+
+// ── WHATSAPP CATEGORIES for message formatting ──
+const WA_CATEGORIES = [
+  {
+    icon:'📱', name:'Digital Banking Registrations',
+    params:['p1','p2','p3']
+  },
+  {
+    icon:'💰', name:'Cash & Deposit Services',
+    params:['p4','p5']
+  },
+  {
+    icon:'🏦', name:'Savings & Investment Schemes',
+    params:['p7','p8','p9']
+  },
+  {
+    icon:'💳', name:'Card & Cheque Services',
+    params:['p10','p11']
+  },
+  {
+    icon:'📋', name:'Documentation & Compliance',
+    params:['p12','p13','p14']
+  },
+  {
+    icon:'🔄', name:'Transaction & Enquiry Services',
+    params:['p15','p16']
+  },
+  {
+    icon:'💬', name:'Others',
+    params:['p6']
+  }
+];
+
+// Build param lookup map
+const PARAM_MAP = {};
+PARAMS.forEach(p => { PARAM_MAP[p.id] = p; });
 
 let currentSection='dash';
 let resetPwdEmpCode='';
 let reportMode='daily';
+let currentWaMessage='';
 
+// ══ UTILITIES ══
 function showLoading(msg='Loading…'){
   document.getElementById('loadingText').textContent=msg;
   document.getElementById('loadingOverlay').classList.add('active');
@@ -536,7 +549,7 @@ function showToast(msg,dur=3000){
 
 async function apiCall(action,data={}){
   if(SCRIPT_URL.includes('YOUR_SCRIPT_ID')){
-    return{success:false,error:'Script URL not configured. Replace YOUR_SCRIPT_ID_HERE in this file.'};
+    return{success:false,error:'Script URL not configured.'};
   }
   try{
     const params=new URLSearchParams({action, payload:JSON.stringify(data)});
@@ -564,7 +577,6 @@ function goSection(id){
     master:'Master Data',budget:'Budget Management',holidays:'Holiday Management',
     efficiency:'User Efficiency',users:'User Management'};
   document.getElementById('topbarTitle').textContent=titles[id]||id;
-  // Load section data
   if(id==='dash')loadDashboard();
   else if(id==='attendance')loadAttendance();
   else if(id==='reports')loadReports();
@@ -585,7 +597,7 @@ function refreshAll(){if(currentSection==='dash')loadDashboard();else goSection(
   const m=new Date().toISOString().substring(0,7);
   document.getElementById('budgetMonth').value=m;
   document.getElementById('effMonth').value=m;
-  testConnection(); // Test API on load
+  testConnection();
   loadDashboard();
   setInterval(()=>{if(currentSection==='dash')loadDashboard()},120000);
 })();
@@ -608,7 +620,6 @@ async function loadDashboard(){
   document.getElementById('statAbsent').textContent=absent;
   document.getElementById('statNotReported').textContent=Math.max(0,notReported);
   document.getElementById('statSubmitted').textContent=repData.length;
-  // Build overview table
   renderDashTable(attData,repData);
 }
 
@@ -632,8 +643,6 @@ function renderDashTable(attData,repData){
 }
 
 // ══ ATTENDANCE ══
-// CHANGE 1: Fetch master data alongside attendance so "Not Reported" people appear at the bottom.
-// Sort order: Present (0) → Absent (1) → Not Reported (2)
 async function loadAttendance(){
   const date=document.getElementById('attDate').value;
   if(!date)return;
@@ -645,13 +654,10 @@ async function loadAttendance(){
   hideLoading();
   const attData=res.data||[];
   const masterData=masterRes.data||[];
-  // Build set of emp codes that have already reported attendance
   const reportedCodes=new Set(attData.map(r=>r.empCode));
-  // Create "Not Reported" entries for everyone in master who hasn't submitted
   const notReported=masterData
     .filter(m=>!reportedCodes.has(m.empCode))
     .map(m=>({name:m.name,branch:m.branch,empCode:m.empCode,status:'Not Reported',timestamp:'—'}));
-  // Merge all entries and sort: Present → Absent → Not Reported
   const ORDER={Present:0,Absent:1,'Not Reported':2};
   const data=[...attData,...notReported].sort((a,b)=>(ORDER[a.status]??2)-(ORDER[b.status]??2));
   const rows=data.map(r=>`<tr>
@@ -685,8 +691,6 @@ function switchReportTab(mode,btn){
   loadReports();
 }
 
-// CHANGE 2: Sort by score descending (highest rank = rank 1 at top).
-// The sort((a,b)=>b.score-a.score) already achieves this.
 async function loadReports(){
   const mode=reportMode;
   const date=mode==='daily'?document.getElementById('repDate').value:null;
@@ -695,25 +699,121 @@ async function loadReports(){
   showLoading('Loading reports…');
   const res=await apiCall('admin_getReports',{date,month,mode});
   hideLoading();
-  // Sort highest score first → rank 1 at top
   const data=(res.data||[]).sort((a,b)=>b.score-a.score);
+
   const rows=data.map((r,i)=>{
     const rankClass=i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-other';
-    const paramCols=PARAMS.map(p=>`<td>${r.values?.[p.id]||0}</td>`).join('');
+    // Use short names for columns
+    const paramCols=PARAMS.map(p=>`<td style="text-align:center">${r.values?.[p.id]||0}</td>`).join('');
+    // Encode report data for WA button
+    const rData=encodeURIComponent(JSON.stringify({
+      name:r.name, branch:r.branch, score:r.score,
+      date:date||month, values:r.values||{}
+    }));
     return `<tr>
       <td><div class="rank-badge ${rankClass}">${i+1}</div></td>
-      <td>${r.name}</td><td>${r.branch}</td>
+      <td>${r.name}</td>
+      <td>${r.branch}</td>
       <td style="font-weight:700;color:var(--primary)">${r.score}</td>
       ${paramCols}
+      <td><button class="btn btn-wa btn-sm" style="white-space:nowrap" onclick='showWaMessage(${JSON.stringify({name:r.name,branch:r.branch,score:r.score,date:date||month,values:r.values||{}})})'>💬</button></td>
     </tr>`;
   }).join('');
-  const headerCols=PARAMS.map(p=>`<th style="font-size:11px">${p.id.toUpperCase()}</th>`).join('');
+
+  // Header uses short names with full name as tooltip
+  const headerCols=PARAMS.map(p=>
+    `<th style="font-size:12px;text-align:center" title="${p.name}">${p.short}</th>`
+  ).join('');
+
   document.getElementById('reportTableWrap').innerHTML=data.length?
     `<div class="table-wrap" id="repTable" style="overflow-x:auto"><table>
-      <thead><tr><th>#</th><th>Name</th><th>Branch</th><th>Score</th>${headerCols}</tr></thead>
+      <thead><tr>
+        <th>#</th><th>Name</th><th>Branch</th><th>Score</th>
+        ${headerCols}
+        <th>WA</th>
+      </tr></thead>
       <tbody>${rows}</tbody>
-    </table></div>`:'<p style="text-align:center;color:var(--muted);padding:20px">No reports found</p>';
+    </table></div>
+    <p style="font-size:11px;color:var(--muted);margin-top:8px;padding-left:4px">
+      💡 Hover over column headers to see full parameter names · 💬 Click to preview WhatsApp format
+    </p>`
+    :'<p style="text-align:center;color:var(--muted);padding:20px">No reports found</p>';
 }
+
+// ══ WHATSAPP MESSAGE GENERATOR ══
+function buildWaMessage(r){
+  const dateStr = r.date ? r.date.split('-').reverse().join('.') : '—';
+  const totalParams = PARAMS.length;
+  // Count params with value > 0
+  const doneCount = PARAMS.filter(p=>(r.values?.[p.id]||0)>0).length;
+
+  let msg = `🙏 *SEVA SARATHI REPORT*\n`;
+  msg += `━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+  msg += `📝 Reported by: ${r.name}\n`;
+  msg += `Branch: ${r.branch}\n`;
+  msg += `📅 Date: ${dateStr}\n`;
+  msg += `🏆 YS: ${doneCount}/${totalParams}\n`;
+
+  // Build category sections — only include categories with at least one non-zero param
+  let sections = '';
+  WA_CATEGORIES.forEach(cat => {
+    const lines = [];
+    cat.params.forEach(pid => {
+      const val = r.values?.[pid] || 0;
+      if(val > 0){
+        const param = PARAM_MAP[pid];
+        lines.push(`   • ${param.name}: ${val}`);
+      }
+    });
+    if(lines.length > 0){
+      sections += `\n${cat.icon} *${cat.name}*\n${lines.join('\n')}\n`;
+    }
+  });
+
+  msg += sections;
+
+  // Missing parameters
+  const missing = PARAMS.filter(p => (r.values?.[p.id]||0) === 0).map(p => p.name);
+  if(missing.length > 0){
+    msg += `\n❌ *Not done today:*\n`;
+    missing.forEach((m,i) => { msg += `${i+1}. ${m}\n`; });
+  }
+
+  msg += `\n━━━━━━━━━━━━━━━━━━━━━━━━`;
+  return msg;
+}
+
+function showWaMessage(reportData){
+  const msg = buildWaMessage(reportData);
+  currentWaMessage = msg;
+  // Display with HTML line breaks in bubble
+  document.getElementById('waPreviewText').innerText = msg;
+  document.getElementById('waModal').classList.add('active');
+}
+
+function closeWaModal(){
+  document.getElementById('waModal').classList.remove('active');
+}
+
+async function copyWaMessage(){
+  try{
+    await navigator.clipboard.writeText(currentWaMessage);
+    showToast('✅ Message copied to clipboard!');
+  }catch(e){
+    // Fallback
+    const ta=document.createElement('textarea');
+    ta.value=currentWaMessage;
+    document.body.appendChild(ta);ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('✅ Copied!');
+  }
+}
+
+// Close WA modal on overlay click
+document.getElementById('waModal').addEventListener('click', function(e){
+  if(e.target===this) closeWaModal();
+});
 
 async function downloadReportExcel(){
   const mode=reportMode;
@@ -722,6 +822,7 @@ async function downloadReportExcel(){
   const res=await apiCall('admin_getReports',{date,month,mode});
   const data=(res.data||[]).sort((a,b)=>b.score-a.score);
   if(!data.length){showToast('No data to export');return}
+  // Use full param names for Excel export
   const headers=['Rank','Name','Branch','Score',...PARAMS.map(p=>p.name)];
   const csvRows=[headers.join(',')];
   data.forEach((r,i)=>{
@@ -750,13 +851,8 @@ async function loadMasterData(){
   hideLoading();
   const data=res.data||[];
   const rows=data.map((r,i)=>`<tr>
-    <td>${i+1}</td>
-    <td>${r.branch}</td>
-    <td>${r.name}</td>
-    <td>${r.empCode||'—'}</td>
-    <td>
-      <button class="btn btn-danger btn-sm btn-icon" onclick="removeBranch('${r.empCode}','${r.branch.replace(/'/g,"\\'")}')">🗑</button>
-    </td>
+    <td>${i+1}</td><td>${r.branch}</td><td>${r.name}</td><td>${r.empCode||'—'}</td>
+    <td><button class="btn btn-danger btn-sm btn-icon" onclick="removeBranch('${r.empCode}','${r.branch.replace(/'/g,"\\'")}')">🗑</button></td>
   </tr>`).join('');
   document.getElementById('masterTableWrap').innerHTML=`
     <div class="table-wrap"><table>
@@ -803,8 +899,8 @@ async function loadBudgetAdmin(){
   hideLoading();
   const branches=(masterRes.data||[]).map(r=>r.branch);
   const budgets=budgetRes.data||{};
-  // Build editable table
-  const paramHeaders=PARAMS.map(p=>`<th style="font-size:11px;min-width:70px">${p.name.substring(0,10)}…</th>`).join('');
+  // Use short names in budget table header
+  const paramHeaders=PARAMS.map(p=>`<th style="font-size:11px;min-width:70px" title="${p.name}">${p.short}</th>`).join('');
   const rows=branches.map(branch=>{
     const bd=budgets[branch]||{};
     const cells=PARAMS.map(p=>`<td><input type="number" min="0" value="${bd[p.id]||0}"
@@ -827,10 +923,8 @@ async function saveBudget(){
   const masterRes=await apiCall('admin_getMasterData');
   const branches=(masterRes.data||[]).map(r=>r.branch);
   if(!branches.length){showToast('⚠️ No branches found');return}
-
   showLoading(`Saving budget (0/${branches.length})…`);
   let errors=[];
-  // KEY FIX: Save ONE branch at a time — keeps URL payload small
   for(let i=0;i<branches.length;i++){
     const branch=branches[i];
     const key=branch.replace(/[\s/]/g,'_');
@@ -879,6 +973,7 @@ async function uploadBudgetCSV(input){
 }
 
 function downloadBudgetTemplate(){
+  // Use full param names in template
   const headers=['Branch',...PARAMS.map(p=>p.name)];
   const sampleBranches=['MALAPPURAM','KOTTAKKAL','PUTHANATHANI','(add more branches...)'];
   const csv=[headers.join(','),...sampleBranches.map(b=>[`"${b}"`,...PARAMS.map(()=>0)].join(','))];
@@ -907,16 +1002,12 @@ async function testConnection(){
 }
 
 async function setupSheets(){
-  if(!confirm('This will initialize Google Sheets (creates SS_Users, SS_Attendance, etc.) and seed the 22 branches. Only needed once. Continue?'))return;
+  if(!confirm('This will initialize Google Sheets and seed the 22 branches. Only needed once. Continue?'))return;
   showLoading('Setting up sheets…');
   const res=await apiCall('setupSheets');
   hideLoading();
-  if(res.success){
-    showToast('✅ '+res.message,6000);
-    setTimeout(()=>refreshAll(),1000);
-  } else {
-    showToast('❌ Setup failed: '+(res.error||'unknown'),6000);
-  }
+  if(res.success){showToast('✅ '+res.message,6000);setTimeout(()=>refreshAll(),1000);}
+  else showToast('❌ Setup failed: '+(res.error||'unknown'),6000);
 }
 
 // ══ HOLIDAYS ══
@@ -976,13 +1067,8 @@ function loadWorkingDays(month){
 
 function isWorkingDay(date,year,month){
   const day=date.getDay();
-  if(day===0)return false; // Sunday
-  if(day===6){
-    // 2nd and 4th Saturdays
-    const week=Math.ceil(date.getDate()/7);
-    if(week===2||week===4)return false;
-  }
-  // Check custom holidays
+  if(day===0)return false;
+  if(day===6){const week=Math.ceil(date.getDate()/7);if(week===2||week===4)return false;}
   const ds=date.toISOString().split('T')[0];
   if(holidayList.some(h=>h.date===ds))return false;
   return true;
@@ -1002,7 +1088,6 @@ async function loadEfficiency(){
   }
   const maxScore=Math.max(...data.map(u=>u.totalScore||0))||1;
   const html=data.sort((a,b)=>b.totalScore-a.totalScore).map(u=>{
-    const eff=Math.round((u.totalScore/maxScore)*100);
     const suggestions=generateSuggestions(u);
     const initials=u.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
     return `<div class="eff-card">
@@ -1016,9 +1101,8 @@ async function loadEfficiency(){
       </div>
       ${PARAMS.map(p=>{
         const val=u.paramTotals?.[p.id]||0;
-        const pct=Math.min(100,val>0?100:0);
         return `<div class="eff-bar-row">
-          <span class="eff-bar-label">${p.name.substring(0,22)}</span>
+          <span class="eff-bar-label" title="${p.name}">${p.name.substring(0,22)}</span>
           <div class="eff-bar-track"><div class="eff-bar-fill" style="width:${val>0?Math.min(100,val*5)+'%':'0'}"></div></div>
           <span class="eff-score-badge">${val}</span>
         </div>`;
@@ -1043,13 +1127,9 @@ async function loadUsers(){
   hideLoading();
   const data=res.data||[];
   const rows=data.map(u=>`<tr>
-    <td>${u.empCode}</td>
-    <td>${u.name}</td>
-    <td>${u.branch}</td>
+    <td>${u.empCode}</td><td>${u.name}</td><td>${u.branch}</td>
     <td><span class="status-pill ${u.firstLogin?'not-reported':'present'}">${u.firstLogin?'Default':'Changed'}</span></td>
-    <td>
-      <button class="btn btn-warning btn-sm" onclick="openResetPwd('${u.empCode}','${u.name.replace(/'/g,"\\'")}')">🔑 Reset</button>
-    </td>
+    <td><button class="btn btn-warning btn-sm" onclick="openResetPwd('${u.empCode}','${u.name.replace(/'/g,"\\'")}')">🔑 Reset</button></td>
   </tr>`).join('');
   document.getElementById('usersTableWrap').innerHTML=`
     <div class="table-wrap"><table>
@@ -1071,10 +1151,8 @@ async function confirmResetPwd(){
   showLoading('Resetting…');
   const res=await apiCall('admin_resetPassword',{empCode:resetPwdEmpCode,newPassword:pwd});
   hideLoading();
-  if(res.success){
-    showToast('✅ Password reset!');
-    document.getElementById('resetPwdModal').style.display='none';
-  }else showToast('❌ '+res.error);
+  if(res.success){showToast('✅ Password reset!');document.getElementById('resetPwdModal').style.display='none';}
+  else showToast('❌ '+res.error);
 }
 
 // ══ PNG GENERATOR ══
@@ -1082,49 +1160,51 @@ function generatePng(title,data,cols,keys,addRank=false){
   if(!data.length){showToast('No data to export');return}
   const canvas=document.getElementById('exportCanvas');
   const rowH=36,padding=20,headerH=80,footerH=30;
-  const colWidths=addRank?[40,180,180,80,...PARAMS.map(()=>45)]:[200,200,120];
+  const colWidths=addRank?[40,180,180,80,...PARAMS.map(()=>52)]:[200,200,120];
   const totalW=colWidths.reduce((a,b)=>a+b,0)+padding*2;
   const totalH=headerH+(data.length+1)*rowH+footerH+padding*2;
   canvas.width=totalW;canvas.height=totalH;
   const ctx=canvas.getContext('2d');
-  // Background
   ctx.fillStyle='#f0f3f8';ctx.fillRect(0,0,totalW,totalH);
-  // Header
   const grad=ctx.createLinearGradient(0,0,totalW,0);
   grad.addColorStop(0,'#0f2d5e');grad.addColorStop(1,'#1B4F9B');
   ctx.fillStyle=grad;ctx.fillRect(0,0,totalW,headerH);
-  ctx.fillStyle='#F5A623';ctx.font='bold 22px Rajdhani, sans-serif';
+  ctx.fillStyle='#F5A623';ctx.font='bold 22px sans-serif';
   ctx.fillText('SEVA SARATHI – MALAPPURAM',padding,32);
-  ctx.fillStyle='rgba(255,255,255,0.8)';ctx.font='14px Noto Sans, sans-serif';
+  ctx.fillStyle='rgba(255,255,255,0.8)';ctx.font='14px sans-serif';
   ctx.fillText(title,padding,56);
-  ctx.fillStyle='rgba(255,255,255,0.5)';ctx.font='11px Noto Sans, sans-serif';
+  ctx.fillStyle='rgba(255,255,255,0.5)';ctx.font='11px sans-serif';
   ctx.fillText('Generated: '+new Date().toLocaleString('en-IN'),padding,72);
-  // Table header
   let y=headerH+padding;let x=padding;
   ctx.fillStyle='#1B4F9B';ctx.fillRect(0,y,totalW,rowH);
-  ctx.fillStyle='#fff';ctx.font='bold 13px Noto Sans, sans-serif';
-  cols.forEach((col,i)=>{
-    ctx.fillText(col,x+6,y+23);
-    x+=colWidths[i]||80;
-  });
+  ctx.fillStyle='#fff';ctx.font='bold 12px sans-serif';
+  // Use short names for PNG export columns
+  const pngCols = addRank ? [...cols, ...PARAMS.map(p=>p.short)] : cols;
+  const pngWidths = addRank ? colWidths : colWidths;
+  cols.forEach((col,i)=>{ctx.fillText(col,x+4,y+23);x+=colWidths[i]||52;});
+  if(addRank) PARAMS.forEach((p,i)=>{ctx.fillText(p.short,x+2,y+23);x+=52;});
   y+=rowH;
-  // Rows
   data.forEach((row,ri)=>{
     ctx.fillStyle=ri%2===0?'#fff':'#f7f9fc';ctx.fillRect(0,y,totalW,rowH);
     x=padding;
     keys.forEach((k,ki)=>{
-      ctx.fillStyle='#1a2332';ctx.font=(k==='score'||k==='_rank')?'bold 13px Noto Sans, sans-serif':'13px Noto Sans, sans-serif';
+      ctx.fillStyle='#1a2332';
+      ctx.font=(k==='score'||k==='_rank')?'bold 12px sans-serif':'12px sans-serif';
       let val=k==='_rank'?ri+1:(row[k]||0);
-      if(k.startsWith('p'))val=row.values?.[k]||0;
-      ctx.fillText(String(val),x+6,y+23);
-      x+=colWidths[ki]||80;
+      ctx.fillText(String(val),x+4,y+23);
+      x+=colWidths[ki]||52;
     });
+    if(addRank){
+      PARAMS.forEach(p=>{
+        ctx.fillStyle='#1a2332';ctx.font='12px sans-serif';
+        ctx.fillText(String(row.values?.[p.id]||0),x+4,y+23);
+        x+=52;
+      });
+    }
     y+=rowH;
   });
-  // Footer
-  ctx.fillStyle='#6b7a90';ctx.font='11px Noto Sans, sans-serif';
+  ctx.fillStyle='#6b7a90';ctx.font='11px sans-serif';
   ctx.fillText('Seva Sarathi Program',padding,y+padding+16);
-  // Download
   const a=document.createElement('a');
   a.href=canvas.toDataURL('image/png');
   a.download=`${title.replace(/\s/g,'_')}.png`;a.click();
@@ -1132,7 +1212,6 @@ function generatePng(title,data,cols,keys,addRank=false){
 
 async function downloadEffCard(empCode){
   showToast('📸 Downloading efficiency card…');
-  // Simplified - in production, generate detailed card
   generatePng('Efficiency Card',[],...[],[]);
 }
 </script>
