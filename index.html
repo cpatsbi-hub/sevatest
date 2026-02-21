@@ -908,12 +908,20 @@ function buildWaMessage(score, values){
     }
   });
 
-  // ── Missed parameters ──
-  const missed = PARAMS.filter(p => (values[p.id] || 0) === 0).map(p => p.name);
-  if(missed.length > 0){
-    msg += `I missed these:\n`;
-    missed.forEach((m, i) => { msg += `${i + 1}. ${m}\n`; });
-  }
+/* ── Missed parameters (ALERT STYLE) ── */
+const missed = PARAMS.filter(p => (values[p.id] || 0) === 0).map(p => p.name);
+
+if(missed.length > 0){
+  msg += `\n`;
+  msg += `⚠️⚠️⚠️ *ATTENTION REQUIRED* ⚠️⚠️⚠️\n\n`;
+  msg += `❌ *MISSED PARAMETERS (${missed.length})*\n\n`;
+
+  missed.forEach(m => {
+    msg += `🔴 ${m}\n`;
+  });
+
+  msg += `\n⚠️ Please focus tomorrow.\n`;
+}
 
   return msg.trimEnd();
 }
